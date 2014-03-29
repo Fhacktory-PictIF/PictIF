@@ -1,5 +1,9 @@
-from flask import Flask, render_template, request
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from flask import Flask, render_template
 import json
+
+from core.component import Component
 
 app = Flask(__name__)
 app.debug = True
@@ -10,12 +14,13 @@ def index():
 
 @app.route("/block/list", methods = ['GET'])
 def getBlocksList():
-    resp = dict(ok=True)
+    resp = dict(ok=True, io=Component.ioComponents, processors=Component.processors, selectors=Component.selectors, statistics=Component.statistics)
     return json.dumps(resp)
 
 @app.route("/block/execute/<blockId>", methods = ['POST'])
 def executeBlock(blockId):
     resp = dict(ok=True)
+
     return json.dumps(resp)
 
 @app.route("/block/reset/<blockId>", methods = ['POST'])

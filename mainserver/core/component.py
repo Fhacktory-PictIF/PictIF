@@ -1,8 +1,41 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from component import Component
-from IO import O, ImageData
+
 import os, time
+from IO import O, ImageData
+
+class Component():
+    ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
+    processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
+    selectors = dict(RowFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
+    statistics = []
+    #classmere.__subclasses__() return list
+
+
+    def __init__(self, name) :
+    	self.parent = None
+    	self.name = name
+    	self.images = None
+    	self.executed = False
+        self.description = ""
+
+    def setParent(self,parent):
+    	self.parent = parent
+    	if parent is None :
+    		self.executed = False
+
+    def isSafelyExecuted(self):
+    	return False if (self.parent is None) else True if isinstance(self.parent, Reader) and self.parent.executed and self.executed else self.parent.isSafelyExecuted() and self.executed
+
+    def executeParent(self):
+    	if not self.parent.executed:
+    		self.parent.process()
+
+    def process():
+    	print 'Abstract class'
+
+    def showOutput():
+    	print 'print treated images'
 
 class Reader(Component):
 
@@ -21,7 +54,7 @@ class Reader(Component):
         self.read(self.pathes)
         self.length = len(self.images)
         for image in self.images:
-            image.load()            
+            image.load()
         self.key_points = [i.image.findKeypoints() for i in self.images]
         self.mean_colors = [k.meanColor() for k in self.key_points]
         self.executed = True
@@ -34,7 +67,7 @@ class Reader(Component):
                 images.append(ImageData(path))
             elif os.path.isdir(path):
                 # print "Considering directory ", path
-                for dirname, dirnames, filenames in os.walk(path):  
+                for dirname, dirnames, filenames in os.walk(path):
                     # print "Directory ", dirname," has subfolders ", dirnames
                     # print "Directory ", dirname," has subfiles ", filenames
                     for filename in filenames:
@@ -50,7 +83,7 @@ class Writer(Component):
         self.description = "Writes the content of the data stream's content in a specified path."
         self.path = ""
         self.osef = "File path:string,etc."
-        
+
     def process():
         O.write(self.images, self.path, "")
         self.executed = True
