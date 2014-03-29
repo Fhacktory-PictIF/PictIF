@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, time
+import os
 from IO import O, ImageData
+
+nbComponents = 0
+
+def generateId():
+    global nbComponents
+    nbComponents += 1
+    return nbComponents
 
 class Component():
     ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
@@ -13,9 +20,9 @@ class Component():
 
     components = dict(ioComponents='I/O', processors='Processors', selectors='Selectors', statistics='Statistics')
 
-    def __init__(self, name) :
+    def __init__(self) :
     	self.parent = None
-    	self.name = name
+    	self.id = generateId()
     	self.images = None
     	self.executed = False
         self.description = ""
@@ -40,8 +47,8 @@ class Component():
 
 class Reader(Component):
 
-    def __init__(self, name):
-        Component.__init__(self, name)
+    def __init__(self):
+        Component.__init__(self)
         self.description = "Creates a data stream from a file or a folder and its subfolders."
         self.pathes = None
         self.length = None
@@ -79,8 +86,8 @@ class Reader(Component):
 
 class Writer(Component):
     """Writes pics on disc"""
-    def __init__(self, name):
-        Component.__init__(self, name)
+    def __init__(self):
+        Component.__init__(self)
         self.description = "Writes the content of the data stream's content in a specified path."
         self.path = ""
         self.osef = "File path:string,etc."

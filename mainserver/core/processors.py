@@ -5,11 +5,12 @@ from component import Component
 import numpy
 from IO import O, ImageData
 from SimpleCV import Color
+import cv2
 
 class Cropper(Component):
 
-	def __init__(self, name):
-		Component.__init__(self, name)
+	def __init__(self):
+		Component.__init__(self)
 		self.output = O()
 		self.x = 0
 		self.y = 0
@@ -29,14 +30,15 @@ class Cropper(Component):
 
 class GrayScale(Component):
 
-	def __init__(self, name):
-		Component.__init__(self, name)
+	def __init__(self):
+		Component.__init__(self)
 		self.output = O()
 		self.degree = 1
 
 	def process(self):
 
-		self.executeParent()
+		if not self.executed and (self.parent is not None):
+			self.executeParent()
 
 		for im in self.images:
 			(red, green, blue) = im.image.splitChannels(False)
@@ -48,8 +50,8 @@ class GrayScale(Component):
 
 class ChromaKey(Component):
 
-	def __init__(self, name):
-		Component.__init__(self, name)
+	def __init__(self):
+		Component.__init__(self)
 		self.green_screen = ImageData("../test/greenScreen.jpg")
 		self.green_screen.load()
 		self.background = ImageData("../test/landscape.jpg")
@@ -58,7 +60,8 @@ class ChromaKey(Component):
 
 	def process(self):
 
-		self.executeParent()
+		if not self.executed and (self.parent is not None):
+			self.executeParent()
 
 		mask = self.green_screen.image.hueDistance(color=Color.GREEN).binarize()
 		
@@ -68,20 +71,31 @@ class ChromaKey(Component):
 
 class FacesDetector(Component):
 
-	def __init__(self, name):
-		Component.__init__(self,name)
-		self.image = ImageData("../test/people.jpg")
+	def __init__(self):
+		Component.__init__(self)
+		self.image = ImageData("../../test/people.jpg")
+		self.cascade = cv2.CascadeClassifier('../../XML/haarcascade_frontalface_default.xml')
 		self.image.load()
 		self.output = O()
 
 	def process(self):
 
-		#self.executeParent()
+		if not self.executed and (self.parent is not None):
+			self.executeParent()
 
-		faces = self.image.image.findHaarFeatures("../XML/haarcascade_frontalface_alt.xml")
-		faces.sortColorDistance(Color.GREEN)[0].draw(Color.GREEN)
-		self.image.image.show()
-		time.sleep(10)
+		img = cv2.imread("../../test/people.jpg")
+		gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+		ret,thresh = cv2.threshold(gray,127,255,0)
+		faces = self.cascade.detectMultiScale(gray, 1.3, 5)
+		contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+		for (x,y,w,h) in faces:
+		    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+		cv2.drawContours(img, contours, -1, (0,255,0), 3)
+		
+
+		cv2.imshow('img',img)
+		cv2.waitKey(0)
+		cv2.destroyAllWindows()
 
 
 if __name__ == "__main__" :
@@ -94,6 +108,6 @@ if __name__ == "__main__" :
 	chroma = ChromaKey(suffixes[0])
 	suffixes = suffixes[1:]
 	chroma.process()"""
-	detector = FacesDetector(suffixes[0])
+	detector = FacesDetector()
 	suffixes = suffixes[1:]
 	detector.process()
