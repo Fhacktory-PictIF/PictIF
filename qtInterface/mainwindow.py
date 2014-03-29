@@ -15,9 +15,9 @@ class Ui_MainWindow(QtGui.QMainWindow):
         MainWindow.resize(800, 600)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.listeModule = QtGui.QListView(self.centralwidget)
-        self.listeModule.setGeometry(QtCore.QRect(0, 220, 231, 341))
-        self.listeModule.setObjectName("listeModule")
+        self.treeModule = QtGui.QTreeWidget(self.centralwidget)
+        self.treeModule.setGeometry(QtCore.QRect(0, 220, 231, 341))
+        self.treeModule.setObjectName("listeModule")
         self.graphicsView = QtGui.QGraphicsView(self.centralwidget)
         self.graphicsView.setGeometry(QtCore.QRect(240, 90, 551, 461))
         self.graphicsView.setObjectName("graphicsView")
@@ -38,13 +38,50 @@ class Ui_MainWindow(QtGui.QMainWindow):
 
     def init_user(self) :
         #create actions to be put in file menu
+
+        #action to open project
+        openProjectAction = QtGui.QAction( '&Open project', self)
+        openProjectAction.setShortcut('Ctrl+O')
+        openProjectAction.setStatusTip('Open project')
+
+
+        #action to exit
         exitAction = QtGui.QAction(QtGui.QIcon('exit.png'), '&Exit', self)
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(self.close)
 
+
+
         self.fileMenu = self.menubar.addMenu('&File')
+        self.settingsMenu = self.menubar.addMenu('&Settings')
+        self.helpMenu = self.menubar.addMenu('&Help')
+        self.toolsMenu = self.menubar.addMenu('&Tools')
+
         self.fileMenu.addAction(exitAction)
+        self.fileMenu.addAction(openProjectAction)
+
+
+        #self.treeWidget = QtGui.QTreeWidget()
+        self.treeModule.setColumnCount(1)
+        items = []
+        for i in range(10):
+            item = QtGui.QTreeWidgetItem(None,  [str(i)])
+            item.setText(0,"pihjoi")
+            print(item.text(0))
+            items.append(item)
+
+        drag = QtGui.QDrag(self.treeModule)
+        drag.setHotSpot(QtCore.QPoint(drag.pixmap().width()/2,
+                       drag.pixmap().height()))
+
+        QtGui.QDrag(self.treeModule)
+        print(drag.source())
+
+        self.treeModule.insertTopLevelItems(1, items)
+
+
+
 
 
     def retranslateUi(self, MainWindow):
@@ -58,6 +95,9 @@ class ControlMainWindow(QtGui.QMainWindow):
     self.ui.setupUi(self)
     self.ui.init_user()
    
+
+
+
 if __name__ == "__main__":
     app = QtGui.QApplication(sys.argv)
     mySW = ControlMainWindow()
