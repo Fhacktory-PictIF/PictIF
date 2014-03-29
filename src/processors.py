@@ -2,15 +2,18 @@
 # -*- coding: utf-8 -*-
 
 from component import Component
+<<<<<<< HEAD
 import numpy
 from IO import I, O, ImageData
 from SimpleCV import Color
+=======
+from IO import O
+>>>>>>> 66aeed7580e0ecc915fb12f2a13b1a7b5bc5f47c
 
 class Cropper(Component):
 
 	def __init__(self, name):
 		Component.__init__(self, name)
-		self.input = I()
 		self.output = O()
 		self.x = 0
 		self.y = 0
@@ -31,7 +34,6 @@ class GrayScale(Component):
 
 	def __init__(self, name):
 		Component.__init__(self, name)
-		self.input = I()
 		self.output = O()
 		self.degree = 1
 
