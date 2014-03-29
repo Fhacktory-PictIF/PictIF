@@ -2,6 +2,9 @@
 oldObj = null;
 
 $('#search').on('input', function() {
+    $.getJSON('/block/list', function(data) {
+        //TODO: retrieve blocks name
+        });
 
     var words = $('#search').val().toLowerCase().split(' ');
 
@@ -17,6 +20,11 @@ $('#search').on('input', function() {
     });
 });
 
+function notify(msg)
+{
+    $('#console').val($('#console').val() + msg);
+}
+
 function selectLine(obj) {
     var idLigne=obj.id;
     obj.className="danger";
@@ -30,40 +38,61 @@ function selectLine(obj) {
     }
 }
 
-/*
-function addBlock()
-{
-    var objId, i, elmt;
-    var contenu = new Array();
-    var resultat;
+function addBlock() {
+    var objId;
 
-    if (oldObj != null)
-    {
-        objId = oldObj.id;
-        switch(objId)
-        {
-            case "ligne1":
-                msg = msg + "ligne 1";
-                break;
-            case "ligne2":
-                msg = msg + "ligne 2";
-                break;
-            case "ligne3":
-                msg = msg + "ligne 3";
-                break;
-        }
-
-        elmt = document.getElementById(objId);
-        i = 0;
-        while (elmt!=null)
-        {
-            objId = oldObj.id + i.toString();
-
-            elmt = document.getElementById(objId);
-            if (elmt!=null)
-                contenu[i] = elmt.innerHTML;
-            i++;
-        }
+    if(objId != null) {
+        $.ajax({
+            url: '/block/add/' + oldObj.id,
+            type: 'POST',
+            dataType: "json",
+            data: JSON.stringify("data"),
+            success : function(data){
+                //TODO Recuperer les donnees et ajouter un bloc au canevas
+            }});
+        notify("Block TODO added\n");
     }
 }
-*/
+
+
+function reset() {
+    //TODO reset un bloc selectionne sur le canevas
+    $.ajax({
+        url: "/block/reset/" + "TODOOOOO",
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+
+        }});
+    notify("Node reset: TODO ID\n");
+}
+
+function execute() {
+    notify("Executing node TODO...");
+    //TODO execute un bloc selectionne sur le canevas
+    $.ajax({
+        url: '/block/execute/' + 'TODOOOOO',
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+
+        }});
+    notify("Done\n");
+}
+
+function save() {
+    notify("Saving work flow...");
+    //Save everything
+    $.ajax({
+        url: '/save',
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+
+        }});
+
+    notify("Done\n");
+}
