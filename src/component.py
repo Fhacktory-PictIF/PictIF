@@ -15,7 +15,7 @@ class Component():
     def showOutput():
     	print 'print treated images'
 
-class Croper(Component):
+class Cropper(Component):
 
 	def __init__(self, name, x, y, width, height):
 		Component.__init__(self, name)
@@ -49,7 +49,7 @@ if __name__ == "__main__" :
 	names = string.letters + string.digits
 
 	names, component = createComponent(names)
-	croper = Croper(names[0],100,100,50,50)
-	croper.process()
+	cropper = Cropper(names[0],100,100,50,50)
+	cropper.process()
 
 	
