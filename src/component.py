@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from SimpleCV import Image
-from io import I, O
+from IO import I, O
 
 class Component():
 

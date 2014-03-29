@@ -14,7 +14,7 @@ class I():
 		images = []
 		if os.path.isfile(path):
 			# print "Considering file ", path
-			images.append(Image(path))
+			images.append(ImageData(path))
 		elif os.path.isdir(path):
 			# print "Considering directory ", path
 			for dirname, dirnames, filenames in os.walk(path):
@@ -23,8 +23,7 @@ class I():
 					images.append(self.read(subdirname))
 				for filename in filenames:
 					# print "Considering file ", filename
-					img = Image(dirname+filename)
-					img.show()
+					img = ImageData(dirname+filename)
 					images.append(img)
 		return images
 
@@ -33,7 +32,10 @@ class O():
 	def __init__(self):
 		pass
 
-	def write(self, lol):
+	def write(self, images):
+		pass
+
+	def write(self, image):
 		pass
 
 class ImageData():
