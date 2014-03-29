@@ -1,8 +1,5 @@
 from flask import Flask, render_template, request
 import json
-import pandas
-import math
-import random
 
 app = Flask(__name__)
 app.debug = True
