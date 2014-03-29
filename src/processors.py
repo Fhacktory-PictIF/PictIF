@@ -2,9 +2,14 @@
 # -*- coding: utf-8 -*-
 
 from component import Component
+<<<<<<< HEAD
 import numpy
 from IO import O, ImageData
 from SimpleCV import Color
+=======
+from SimpleCV import Color
+from IO import O, ImageData
+>>>>>>> 2dbc7bc999dc83689fb4a14176cd7cf3b85451ff
 
 class Cropper(Component):
 
@@ -18,13 +23,12 @@ class Cropper(Component):
 
 	def process(self):
 
-		img_input = self.input.readC(["../test/"])
-
-		for im in img_input:
+		for im in self.images:
 			im.image = im.image.crop(self.x,self.y,self.width,self.height)
-		self.executed = True
 		
-		self.output.write(img_input,'../test/cropped/',self.name)
+		self.output.write(self.images,'../cropped/',self.name)
+
+		self.executed = True
 
 class GrayScale(Component):
 
@@ -34,15 +38,16 @@ class GrayScale(Component):
 		self.degree = 1
 
 	def process(self):
-		img_input = self.input.readC(["../test/"])
 
-		for im in img_input:
+		self.executeParent()
+		
+		for im in self.images:
 			(red, green, blue) = im.image.splitChannels(False)
 			im.image = (red.toGray() + green.toGray() + blue.toGray()) / self.degree
 
 		self.executed = True
 		
-		self.output.write(img_input,'../binarized/',self.name)
+		self.output.write(self.images,'../binarized/',self.name)
 
 class ChromaKey(Component):
 
