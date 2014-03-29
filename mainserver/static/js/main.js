@@ -1,18 +1,31 @@
 
 oldObj = null;
 
-function selectLine(obj)
-{
+$('#search').on('input', function() {
+
+    var words = $('#search').val().toLowerCase().split(' ');
+
+    $("tr.item").each(function() {
+        $row = $(this)
+        var block = $row.find("td").html().toLowerCase();
+
+        $.each(words, function(key, word) {
+            if(word.length > 0 && block.indexOf(word) < 0) {
+                $("#".concat($row.attr('id'))).remove();
+            }
+        });
+    });
+});
+
+function selectLine(obj) {
     var idLigne=obj.id;
     obj.className="danger";
 
-    if (oldObj!=null)
-    {
+    if (oldObj!=null) {
         oldObj.className = "";
         oldObj = obj;
     }
-    else
-    {
+    else {
         oldObj = obj;
     }
 }

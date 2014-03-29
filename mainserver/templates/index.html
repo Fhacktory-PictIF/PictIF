@@ -11,26 +11,28 @@
             <div class="search">
                 <div class="input-group">
                     <span class="input-group-addon">Search</span>
-                    <input type="text" class="form-control" placeholder="Blocks filter">
+                    <input type="text" id="search" class="form-control" placeholder="Blocks filter">
                 </div>
             </div>
         </div>
 
         <div class="blocksList">
-            <table class="table table-hover">
-              <tr id="line1" onclick="selectLine(this)">
-                <td id="ligne10">Ligne 0 case 0</td>
+            <table id="blockslist" class="table table-hover">
+              <tr id="block1" class="item" onclick="selectLine(this)">
+                <td>Ligne 0 case 0</td>
               </tr>
-              <tr id="line2" onclick="selectLine(this)">
-                <td id="ligne20">Ligne 2 case 0</td>
+              <tr  id="block2" class="item" onclick="selectLine(this)">
+                <td>Ligne 2 case 0</td>
               </tr>
-              <tr id="line3" onclick="selectLine(this)">
-                <td id="ligne30">Ligne 2 case 0</td>
+              <tr id="block3"  class="item" onclick="selectLine(this)">
+                <td>Ligne 2 case 0</td>
               </tr>
             </table>
         </div>
 
-        <input type="button" class="btn btn-default" value="Add" id="addButton" onclick="addBlock()">
+        <div align="right">
+            <input type="button" class="btn btn-default" value="Add" id="addButton" onclick="addBlock()">
+        </div>
     </div>
 
 
@@ -49,11 +51,9 @@
  
         </div>
 
-        <textarea readonly id="console" class="console">
-            Console
-        </textarea>
+        <textarea readonly id="console" class="console">Console</textarea>
 
-        <div class="row-xs-1">
+        <div  align="right">
             <input type="button" class="btn btn-default" value="Reset" id="resetButton" onclick="reset()">
             <input type="button" class="btn btn-default" value="Execute" id="executeButton" onclick="execute()">
             <input type="button" class="btn btn-default" value="Save" id="saveButton" onclick="save()">
@@ -61,15 +61,11 @@
     </div>
 
     <div class="col-md-3" >
-        <textarea readonly class="configuration">
-                configuration
-        </textarea>
+        <textarea readonly class="configuration">configuration</textarea>
         <div class="visualisation">
                 <img src="../static/img/upload_b.png" style="max-height:100%; max-width:100%; margin:auto; display:block" class="borderDiv">
         </div>
-        <textarea readonly id="description" class="description">
-                Description
-        </textarea>
+        <textarea readonly id="description" class="description">Description</textarea>
     </div>
 </div>
 {% endblock body %}
