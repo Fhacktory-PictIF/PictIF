@@ -4,9 +4,18 @@
 class Component():
 
     def __init__(self, name) :
+    	self.parent = None
     	self.name = name
     	self.images = None
     	self.executed = False
+
+    def setParent(parent):
+    	self.parent = parent
+    	if parent == None :
+    		self.executed = False
+
+    def isSafelyExecuted():
+    	return False if (self.parent == None) else self.parent.isSafelyExecuted()
 
     def process():
     	print 'Abstract class'

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from component import Component
-from IO import I, O
+from IO import O
 
 class Reader(Component):
 
@@ -44,3 +44,6 @@ class Writer(Component):
 		Component.__init__(self, arg)
 		self.arg = arg
 		
+	def process(path):
+		O.write(self.images, path, "")
+		self.executed = True
