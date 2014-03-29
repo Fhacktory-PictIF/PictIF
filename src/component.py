@@ -5,6 +5,7 @@ class Component():
 
     def __init__(self, name) :
     	self.name = name
+    	self.images = None
     	self.executed = False
 
     def process():

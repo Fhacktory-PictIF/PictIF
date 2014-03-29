@@ -4,37 +4,6 @@
 import os, ntpath
 from SimpleCV import Image
 
-class I():
-	"""Input mechanism"""
-	def __init__(self):
-		pass
-
-	def read(self, pathes):
-		# print "Reading ", path
-		for path in pathes:
-			# print "Considering path ", path 
-			images = []
-			if os.path.isfile(path):
-				# print "Considering file ", path
-				images.append(ImageData(path))
-			elif os.path.isdir(path):
-				# print "Considering directory ", path
-				for dirname, dirnames, filenames in os.walk(path):
-					for subdirname in dirnames:
-						# print "Considering directory", subdirname
-						images += self.read(subdirname)
-					for filename in filenames:
-						# print "Considering file ", filename
-						img = ImageData(os.path.join(dirname, filename))
-						images.append(img)
-		return images
-
-	def readC(self, path):
-		images = self.read(path)
-		for image in images:
-			image.load()
-		return images
-
 class O():
 	"""Output mechanism"""
 	def __init__(self):
