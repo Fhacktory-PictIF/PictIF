@@ -3,19 +3,35 @@ oldObj = null;
 
 $('#search').on('input', function() {
     $.getJSON('/block/list', function(data) {
-        //TODO: retrieve blocks name
-        });
+        var components = data.components
+        var words = $('#search').val().toLowerCase().split(' ');
+        var table = document.createElement('blockslist');
+        table.innerHTML = "";
 
-    var words = $('#search').val().toLowerCase().split(' ');
+        $.map(data, function(value,key) {
+            $.map(data, function(value,key) {
+                $row = $(this)
+                var block = $row.find("td").html().toLowerCase();
+                var remove = false;
 
-    $("tr.item").each(function() {
-        $row = $(this)
-        var block = $row.find("td").html().toLowerCase();
+                $.each(words, function(key, word) {
+                    if(word.length == 0 && block.indexOf(word) < 0) {
+                        remove = true;
+                    }
+                });
 
-        $.each(words, function(key, word) {
-            if(word.length > 0 && block.indexOf(word) < 0) {
-                $("#".concat($row.attr('id'))).remove();
-            }
+                if(!remove) {
+                    var tr = document.createElement('tr');
+                    line.setAttribute("id", value);
+                    line.setAttribute("class", "item");
+                    line.setAttribute("onclick", "selectLine(this)");
+
+                    var td = document.createElement('td');
+                    td.innerHTML = value;
+
+                    tr.appendChild(td);
+                }
+            });
         });
     });
 });

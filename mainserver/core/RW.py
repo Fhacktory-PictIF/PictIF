@@ -20,7 +20,7 @@ class Reader(Component):
         self.read(self.pathes)
         self.length = len(self.images)
         for image in self.images:
-            image.load()            
+            image.load()
         self.key_points = [i.image.findKeypoints() for i in self.images]
         self.mean_colors = [k.meanColor() for k in self.key_points]
         self.executed = True
@@ -33,7 +33,7 @@ class Reader(Component):
                 images.append(ImageData(path))
             elif os.path.isdir(path):
                 # print "Considering directory ", path
-                for dirname, dirnames, filenames in os.walk(path):  
+                for dirname, dirnames, filenames in os.walk(path):
                     # print "Directory ", dirname," has subfolders ", dirnames
                     # print "Directory ", dirname," has subfiles ", filenames
                     for filename in filenames:
@@ -48,7 +48,7 @@ class Writer(Component):
         Component.__init__(self, name)
         self.path = ""
         self.osef = "File path:string,etc."
-        
+
     def process():
         O.write(self.images, self.path, "")
         self.executed = True
