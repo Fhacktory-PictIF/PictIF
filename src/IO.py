@@ -30,9 +30,10 @@ class I():
 		return images
 
 	def readC(self, path):
-		images = read(path)
+		images = self.read(path)
 		for image in images:
 			image.load()
+		return images
 
 class O():
 	"""Output mechanism"""

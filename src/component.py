@@ -46,14 +46,14 @@ class Cropper(Component):
 		self.height = height
 
 	def process(self):
-		#TODO : replace with I.read()
-		img_input = self.input.read("../test/")
+
+		img_input = self.input.readC(["../test/"])
 
 		images = [i.image.crop(self.x,self.y,self.width,self.height) for i in img_input]
 		self.executed = True
 		#TODO : replace with O.write()
 		for i,k in zip(images,range(4)):
-			i.save("../test/imgT" + str(k) + ".jpeg")
+			i.save("../test/temp/imgT" + str(k) + ".jpeg")
 			img_input[k].unload()
 
 class Binarizer(Component):
