@@ -14,7 +14,7 @@ def index():
 
 @app.route("/block/list", methods = ['GET'])
 def getBlocksList():
-    resp = dict(ok=True, components=Component.components)
+    resp = dict(ok=True, io=Component.ioComponents, processors=Component.processors, selectors=Component.selectors, statistics=Component.statistics)
     return json.dumps(resp)
 
 @app.route("/block/execute/<blockId>", methods = ['POST'])

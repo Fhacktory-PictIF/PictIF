@@ -11,7 +11,6 @@ class Component():
     statistics = []
     #classmere.__subclasses__() return list
 
-    components = dict(ioComponents='I/O', processors='Processors', selectors='Selectors', statistics='Statistics')
 
     def __init__(self, name) :
     	self.parent = None
