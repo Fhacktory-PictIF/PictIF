@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from IO import O as O
 
 
 class Reader(Component):
@@ -13,4 +12,4 @@ class Reader(Component):
 
 	def function():
 		pass
-		
+

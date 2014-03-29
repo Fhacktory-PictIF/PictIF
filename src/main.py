@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 def main():
+	print("lol")
 	pass
 
 
