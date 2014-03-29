@@ -1,0 +1,58 @@
+
+.whiteBorderDiv, .flow, .blocksList, .description, .visualisation, .configuration, .console, .search
+{
+   background-color:#FFFFFF;
+   border: 2px solid #888;
+   border-radius:5px;
+   width:100%;
+}
+
+.flow
+{
+   height:70%;
+   margin-bottom:15px;
+}
+
+.blocksList
+{
+   height:81%;
+   margin-bottom:10px;
+   overflow-y:scroll;
+}
+
+.description
+{
+   height:20%;
+   padding:5px;
+   resize: none;
+   overflow-y:scroll;
+}
+
+.visualisation
+{
+   height:40%;
+   margin-bottom:15px;
+}
+
+.configuration
+{
+   height:23%;
+   margin-bottom:15px;
+   padding:5px;
+   resize: none;
+   overflow-y:scroll;
+}
+
+.console
+{
+   height:15%;
+   margin-bottom:10px;
+   padding:5px;
+   overflow-y:scroll;
+   resize: none;
+}
+
+.search
+{
+   margin-bottom:10px;
+}
