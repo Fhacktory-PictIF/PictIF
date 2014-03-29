@@ -7,6 +7,7 @@ class Component():
     	self.name = name
     	self.images = None
     	self.executed = False
+        self.description = ""
 
     def setParent(parent):
     	self.parent = parent
@@ -21,7 +22,3 @@ class Component():
 
     def showOutput():
     	print 'print treated images'
-
-if __name__ == "__main__" :
-
-	pass
