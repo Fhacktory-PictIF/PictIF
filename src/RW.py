@@ -8,6 +8,7 @@ class Reader(Component):
 
     def __init__(self, name):
         Component.__init__(self, name)
+        self.description = "Creates a data stream from a file or a folder and its subfolders."
         self.pathes = None
         self.length = None
         self.key_points = []
@@ -46,6 +47,7 @@ class Writer(Component):
     """Writes pics on disc"""
     def __init__(self, name):
         Component.__init__(self, name)
+        self.description = "Writes the content of the data stream's content in a specified path."
         self.path = ""
         self.osef = "File path:string,etc."
         
