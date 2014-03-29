@@ -42,14 +42,13 @@
 
     <div class="col-md-6" >
         <div id="flow" class="flow">
-            
-            <div id="container">
 
+            <div id="container">
              </div>
- 
+
         </div>
 
-        <textarea readonly id="console" class="console">Console</textarea>
+        <textarea readonly id="console" class="console"></textarea>
 
         <div  align="right">
             <input type="button" class="btn btn-default" value="Reset" id="resetButton" onclick="reset()">
@@ -70,11 +69,10 @@
 
 
 {% block javascript %}
-    <script src="/static/js/main.js"></script>
-
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
 <script type="text/javascript" src="../static/js/jquery.jsPlumb-1.4.1-all-min.js"></script>
 <script type="text/javascript" src="../static/js/draggable.js"></script>
- 
+<script src="/static/js/main.js"></script>
+
 {% endblock %}
