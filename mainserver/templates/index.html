@@ -1,23 +1,86 @@
-<head>
-</head>
-<body>
 
+{% block style %}
+{% endblock %}
+
+{% block body %}
+{% include "header.html" %}
     <link href="../static/style/style.css" rel="stylesheet">
+<div class="row">
+    <div class="col-md-3" >
+        <div class="row-xs-11">
+            <div class="search">
+                <div class="input-group">
+                    <span class="input-group-addon">Search</span>
+                    <input type="text" class="form-control" placeholder="Blocks filter">
+                </div>
+            </div>
+        </div>
 
-<div id="container">
-    <div id="container0" class="boite"> source </div>
-    <br/>
-    <div id="container1" class="boite">cible </div>
-    <br/>
-    <br/>
+        <div class="blocksList">
+            <table class="table table-hover">
+              <tr id="line1" onclick="selectLine(this)">
+                <td id="ligne10">Ligne 0 case 0</td>
+              </tr>
+              <tr id="line2" onclick="selectLine(this)">
+                <td id="ligne20">Ligne 2 case 0</td>
+              </tr>
+              <tr id="line3" onclick="selectLine(this)">
+                <td id="ligne30">Ligne 2 case 0</td>
+              </tr>
+            </table>
+        </div>
+
+        <input type="button" class="btn btn-default" value="Add" id="addButton" onclick="addBlock()">
+    </div>
+
+
+    <div class="col-md-6" >
+        <div id="flow" class="flow">
+            
+            <div id="container">
+                <div id="container0" class="boite"> source </div>
+                <br/>
+                <div id="container1" class="boite">cible </div>
+                <br/>
+                <br/>
+             
+                <div id="container3" > un div </div>
+             </div>
  
-    <div id="container3" > un div </div>
- </div>
- 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+        </div>
+
+        <textarea readonly id="console" class="console">
+            Console
+        </textarea>
+
+        <div class="row-xs-1">
+            <input type="button" class="btn btn-default" value="Reset" id="resetButton" onclick="reset()">
+            <input type="button" class="btn btn-default" value="Execute" id="executeButton" onclick="execute()">
+            <input type="button" class="btn btn-default" value="Save" id="saveButton" onclick="save()">
+        </div>
+    </div>
+
+    <div class="col-md-3" >
+        <textarea readonly class="configuration">
+                configuration
+        </textarea>
+        <div class="visualisation">
+                <img src="../static/img/upload_b.png" style="max-height:100%; max-width:100%; margin:auto; display:block" class="borderDiv">
+        </div>
+        <textarea readonly id="description" class="description">
+                Description
+        </textarea>
+    </div>
+</div>
+{% endblock body %}
+
+
+{% block javascript %}
+    <script src="/static/js/main.js"></script>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
 <script type="text/javascript" src="../static/js/jquery.jsPlumb-1.4.1-all-min.js"></script>
 <script type="text/javascript" src="../static/js/draggable.js"></script>
  
-</body>
-
+{% endblock %}
