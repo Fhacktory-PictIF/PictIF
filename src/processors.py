@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from component import Component
-from IO import I, O
+from IO import O
 
 class Cropper(Component):
 
 	def __init__(self, name, x, y, width, height):
 		Component.__init__(self, name)
-		self.input = I()
 		self.output = O()
 		self.x = x
 		self.y = y
@@ -30,7 +29,6 @@ class Binarizer(Component):
 
 	def __init__(self, name):
 		Component.__init__(self, name)
-		self.input = I()
 		self.output = O()
 
 	def process(self):
