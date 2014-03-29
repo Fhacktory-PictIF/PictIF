@@ -28,10 +28,10 @@ class RowFilter(Component):
     such as date, time, extension"""
     def __init__(self, name):
         Component.__init__(self, name)
+        self.description = "Excludes from data stream "
         self.criteria = None
         self.time_relative = before # before is default value
         self.time_reference = None
-
 
     def setTimeReference(time):
     	self.time_reference = time
@@ -47,6 +47,7 @@ class Joiner(Component):
     """Joins two streams into one"""
     def __init__(self, name):
         Component.__init__(self, name)
+        self.description = "Joins two data streams into one."
         self.parent2 = None
     
     def setParent2(parent):

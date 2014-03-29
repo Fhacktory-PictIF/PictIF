@@ -15,7 +15,7 @@ class Component():
     		self.executed = False
 
     def isSafelyExecuted():
-    	return False if (self.parent is None) else True if isinstance(self.parent, Reader) and self.parent.executed else self.parent.isSafelyExecuted()
+    	return False if (self.parent is None) else True if isinstance(self.parent, Reader) and self.parent.executed and self.executed else self.parent.isSafelyExecuted() and self.executed
 
     def process():
     	print 'Abstract class'
