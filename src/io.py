@@ -30,5 +30,13 @@ class O():
 
 class ImageData():
 	"""Image object"""
-	def __init__(self, arg):
-		self.arg = arg
+	def __init__(self, path):
+		self.path = path
+		self.image = None
+		self.suffixes = ""
+
+	def load(self):
+		self.image = Image(self.path)
+
+	def unload(self):
+		del self.image
