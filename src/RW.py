@@ -8,16 +8,16 @@ class Reader(Component):
 
     def __init__(self, name):
         Component.__init__(self, name)
-        self.path = None
+        self.pathes = None
         self.length = None
         self.key_points = []
         self.mean_colors = []
 
-    def setPath(self, path):
-        self.path = path
+    def setPathes(self, pathes):
+        self.pathes = pathes
 
     def process(self):
-        self.read(self.path)
+        self.read(self.pathes)
         self.length = len(self.images)
         for image in self.images:
             image.load()            
@@ -25,22 +25,22 @@ class Reader(Component):
         self.mean_colors = [k.meanColor() for k in self.key_points]
         self.executed = True
 
-    def read(self, path):
-        images = []
-        if os.path.isfile(path):
-            # print "Considering file1 ", path
-            images.append(ImageData(path))
-        elif os.path.isdir(path):
-            # print "Considering directory ", path
-            for dirname, dirnames, filenames in os.walk(path):  
-                # print "Directory ", dirname," has subfolders ", dirnames
-                # print "Directory ", dirname," has subfiles ", filenames
-                for filename in filenames:
-                    # print "Considering file2 ", filename, " of ", dirname
-                    img = ImageData(os.path.join(dirname, filename))
-                    images.append(img)
-        self.images = images
-        print len(self.images)
+    def read(self, pathes):
+        for path in pathes:
+            images = []
+            if os.path.isfile(path):
+                # print "Considering file1 ", path
+                images.append(ImageData(path))
+            elif os.path.isdir(path):
+                # print "Considering directory ", path
+                for dirname, dirnames, filenames in os.walk(path):  
+                    # print "Directory ", dirname," has subfolders ", dirnames
+                    # print "Directory ", dirname," has subfiles ", filenames
+                    for filename in filenames:
+                        # print "Considering file2 ", filename, " of ", dirname
+                        img = ImageData(os.path.join(dirname, filename))
+                        images.append(img)
+            self.images = images
 
 class Writer(Component):
     """Writes pics on disc"""
@@ -79,7 +79,7 @@ class RowFilter(Component):
         self.images2 = None
 
     def process():
-        
+
         pass
         
 class Joiner(Component):
