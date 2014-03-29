@@ -33,6 +33,7 @@ class I():
 		images = read(path)
 		for image in images:
 			image.load()
+		return images
 
 class O():
 	"""Output mechanism"""
@@ -41,11 +42,7 @@ class O():
 
 	def write(self, images, path, ComponentId):
 		for image in images:
-			write(image, path)
-
-	def write(self, image, path, ComponentId):
-		image.save(path + image.name + ComponentId + image.extension)
-		pass
+			image.save(path + image.name + ComponentId + image.extension)
 
 class ImageData():
 	"""Image object"""
