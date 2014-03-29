@@ -1,9 +1,11 @@
+  var i = 0;
+
+
 $(document).ready(function() {
 
     var map = {};    
 
 
-  var i = 0;
   var endpointStyle = {
       isTarget:true, 
       maxConnections:5,
@@ -22,34 +24,28 @@ $(document).ready(function() {
     };
 
   $('#container').dblclick(function(e) {
+        addComponent(e);
+  }); 
+
+});
+
+var addComponent function(e){
     var newState = $('<div>').attr('id', 'state' + i).addClass('itemDrag');
     
     var title = $('<div>').addClass('title').text('State ' + i);
     var connect = $('<div>').addClass('connect');
 
     newState.css({
-      'top': e.layerX,  
-      'left': e.layerY
+      'top': 20,  
+      'left': 20
     });
-    /*
-    jsPlumb.makeTarget(newState, {
-        parent: parent
-
-    });
-*/
-/*
-    jsPlumb.makeSource(connect, {
-      parent: newState,
-      anchor: "TopLeft"
-    });
-*/
 
 
     newState.append(title);
     
     
     $('#container').append(newState);
-   jsPlumb.draggable($(".itemDrag"));
+    jsPlumb.draggable($(".itemDrag"));
 
     jsPlumb.addEndpoint('state'+i, {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle"});
     jsPlumb.addEndpoint('state'+i,  {
@@ -63,6 +59,4 @@ $(document).ready(function() {
     jsPlumb.addEndpoint('state'+i,  {anchor:"TopLeft",isTarget:true});
     
     i++;    
-  }); 
-
-});
+};
