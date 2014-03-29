@@ -9,6 +9,7 @@ class Splitter(Component):
     """Splits one stream into two based on one criteria"""
     def __init__(self, name):
         Component.__init__(self, name)
+        self.description = "Splits one data stream into two data streams depending whether they match some specific criteria"
         criteria = None
         self.images2 = None
 
@@ -28,7 +29,7 @@ class RowFilter(Component):
     such as date, time, extension"""
     def __init__(self, name):
         Component.__init__(self, name)
-        self.description = "Excludes from data stream "
+        self.description = "Excludes from data stream files matching any of user's criteria"
         self.criteria = None
         self.time_relative = before # before is default value
         self.time_reference = None
