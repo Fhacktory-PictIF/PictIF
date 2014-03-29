@@ -71,7 +71,7 @@ class Joiner(Component):
     """Joins two streams into one"""
     def __init__(self, name):
         Component.__init__(self, name)
-        self.description = "Joins two data streams into one."
+        self.description = "Joins two data streams into one avoiding duplicates."
         self.parent2 = None
     
     def setParent2(parent):
@@ -80,5 +80,5 @@ class Joiner(Component):
             self.executed = False
 
     def process():
-        self.images = self.parent.images + self.parent2.images
+        self.images = list(set(self.parent.images + self.parent2.images))
         self.executed = True
