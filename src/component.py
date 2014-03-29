@@ -86,5 +86,3 @@ if __name__ == "__main__" :
 	names, component = createComponent(names)
 	cropper = Cropper(names[0],100,100,50,50)
 	cropper.process()
-
-	
