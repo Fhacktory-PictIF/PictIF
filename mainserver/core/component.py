@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time, os
+import time, os, tempfile
 from SimpleCV import Image, Color
 import cv2
 
@@ -16,6 +16,7 @@ class Component(object):
     ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
     selectors = dict(RowFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
+    dir_tmp = tempfile.gettempdir()
     statistics = []
     #classmere.__subclasses__() return list
 
@@ -201,7 +202,7 @@ class Cropper(Component):
 
             self.output.write(self.images,'../../test/cropped/',self.id)
 
-            O.write(self.images, "path", self.id)
+            O.write(self.images, dir_tmp, self.id)
             for image in self.images:
                 image.unload()
 
@@ -231,7 +232,7 @@ class GrayScale(Component):
                 im.image = (red.toGray() + green.toGray() + blue.toGray()) / self.degree
 
             self.executed = True
-            O.write(self.images,"path",self.id)
+            O.write(self.images,dir_tmp,self.id)
             for image in self.images:
                 image.unload()
 
@@ -272,7 +273,7 @@ class ChromaKey(Component):
                 i.image = (background - mask) + (background - mask.invert())
 
             self.executed = True
-            O.write(self.images,"path",self.id)
+            O.write(self.images,dir_tmp,self.id)
             for image in self.images:
                 image.unload()
 
@@ -308,7 +309,7 @@ class FacesDetector(Component):
             cv2.waitKey(0)
             cv2.destroyAllWindows()
 
-            O.write([self.image],"path",self.id)
+            O.write([self.image],dir_tmp,self.id)
             self.image.unload()
 
 
@@ -338,7 +339,7 @@ class Reader(Component):
         # self.key_points = [i.image.findKeypoints() for i in self.images]
         self.mean_colors = [k.meanColor() for k in self.key_points]
         
-        O.write(self.images,"path",self.id)
+        O.write(self.images,dir_tmp,self.id)
         for image in self.images:
             image.unload()
         self.executed = True
@@ -370,7 +371,7 @@ class Writer(Component):
         self.path = "" #TODO
 
     def process(self):
-        O.write(self.images, self.path, "")
+        O.write(self.images, self.path, "Lol")
         self.executed = True
 
 if __name__ == "__main__" :
