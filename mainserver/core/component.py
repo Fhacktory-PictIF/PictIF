@@ -25,10 +25,10 @@ def createImage(path):
             return None
 
 class Component(object):
-    ioComponents = dict(CamReader="Camera stream Reader", Reader='Picture Reader', Writer='Picture Writer')
-    processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey',ImageStack='Image Bluhrer')
+    ioComponents = dict(CamReader="Camera Stream Reader", Reader='Picture Reader', Writer='Picture Writer')
+    processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey',ImageStack='Image Blurrer')
     dir_tmp = tempfile.gettempdir()
-    selectors = dict(FileFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
+    selectors = dict(Splitter="File Splitter", FileFilter='File Filter', Joiner='Joiner')
     statistics = []
     #classmere.__subclasses__() return list
 
@@ -61,13 +61,12 @@ class Component(object):
 
 
 class Splitter(Component):
-    """Splits one stream into two based on one criteria"""
-    description = "Splits one data stream into two data streams depending whether they match some specific criteria"
+    """Splits one stream into two based on random"""
+    description = "Splits one data stream into two data streams depending whether they match some specific random"
     attr_description = Component.attr_description + "images2:list(imageData):second output"
 
     def __init__(self):
         Component.__init__(self)
-        self.criteria = None
         self.images2 = None
 
     def process(self):
@@ -75,11 +74,14 @@ class Splitter(Component):
             self.executeParent()
             self.images = []
             self.images2 = []
-
+            i=2
             for image in self.parent.images:
-                # TODO define split criteria
-                pass
-
+                print "Considering ", image.path
+                if i == 2:
+                    self.images.append(image)
+                else:
+                    self.images2.append(image)
+                i = 2 - i
             self.executed = True
 
 
@@ -208,12 +210,12 @@ class ImageStack(Component):
             pic = reduce(add, [i / float(len(frames)) for i in frames])
             pic.show()
             pth = dir_tmp + "bluhr" + str(l) +".jpeg"
-            l += 1 
+            l += 1
             if (l< len(images)-self.intensity/4):
                 pic.save(pth)
                 imageD = ImageData(pth)
                 self.images.append(imageD)
-        
+
 
 class Cropper(Component):
 
@@ -389,7 +391,7 @@ class Recognizer(Component):
             os.system("opencv_traincascade -data ../../XML/ -vec ../test/positives.vec -w 48 -h 48 -bg ../test/negatives.dat -numPos "+ str(nb_positives) + " -numNeg "+ str(nb_negatives))
 
             cascade = cv2.CascadeClassifier('../../XML/haarcascade_frontalface_default.xml')
-            
+
             for i in self.parent3.images:
                 img = cv2.imread(i.path)
                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -404,7 +406,7 @@ class Recognizer(Component):
                     image = createImage(path)
                     image.date = time.ctime(os.path.getctime(image.path))
                     self.images.append(image)
-            
+
 
 class CamReader(Component):
     """Converts a stream from camera into some static filestream"""
@@ -451,7 +453,7 @@ class Reader(Component):
             # time.sleep(1)
         # self.key_points = [i.image.findKeypoints() for i in self.images]
         self.mean_colors = [k.meanColor() for k in self.key_points]
-        
+
         O.write(self.images,dir_tmp,self.id)
         for image in self.images:
             image.unload()

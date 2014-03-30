@@ -38,6 +38,12 @@ Object.size = function(obj) {
     return size;
 };
 
+/* Handlebars */
+loadTemplate = function(template_id) {
+    var source = $(template_id).html();
+    return Handlebars.compile(source);
+}
+
 function checkSearch(data, words) {
     var table = document.getElementById('blockslist');
     table.innerHTML = "";
@@ -149,14 +155,24 @@ function choose(inputId) {
 
 function save() {
     $("#saveButton").attr("disabled", "disabled");
-    var filePath = $("#saveInput").val();
+
+    var currentdate = new Date();
+    var filePath = "output/" + currentdate.getDate() + "_"
+                    + (currentdate.getMonth()+1)  + "_"
+                    + currentdate.getFullYear() + "_"
+                    + currentdate.getHours() + "_"
+                    + currentdate.getMinutes() + "_"
+                    + currentdate.getSeconds() + ".out";
+
     notify("Saving work flow to " + filePath + "...");
 
     $.ajax({
-        url: '/save/' + filePath,
+        url: '/save',
         type: 'POST',
+        async: false,
         dataType: "json",
-        data: JSON.stringify("data"),
+        data: JSON.stringify({"filePath": filePath}),
+        contentType: 'application/json;charset=UTF-8',
         success : function(data){
             if(data.ok)
             {
@@ -174,13 +190,16 @@ function save() {
 function load() {
     $("#loadButton").attr("disabled", "disabled");
     var filePath = $("#loadInput").val();
+    alert(filePath);
     notify("Loading work flow from " + filePath + "...");
 
     $.ajax({
-        url: '/load/' + filePath,
+        url: '/load',
         type: 'POST',
+        async: false,
         dataType: "json",
-        data: JSON.stringify("data"),
+        data: JSON.stringify({"filePath": filePath}),
+        contentType: 'application/json;charset=UTF-8',
         success : function(data){
             if(data.ok)
             {

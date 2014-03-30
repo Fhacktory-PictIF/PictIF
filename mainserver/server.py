@@ -70,9 +70,13 @@ def getBlockFromType(blockType):
     resp = {'ok': False}
     return json.dumps(resp)
 
-@app.route("/save/<filePath>", methods = ['POST'])
-def saveWorkFlow(filePath):
-    for key, component in componentGestioner.map_of_component:
+@app.route("/save", methods = ['POST'])
+def saveWorkFlow():
+    param = json.loads(request.data)
+    filePath = param['filePath']
+
+    for key in componentGestioner.map_of_component:
+        component = componentGestioner.map_of_component[key]
         for image in component.images:
             image.load()
             image.unload()
@@ -80,8 +84,11 @@ def saveWorkFlow(filePath):
     resp = dict(ok=True)
     return json.dumps(resp)
 
-@app.route("/load/<filePath>", methods = ['POST'])
-def loadWorkFlow(filePath):
+@app.route("/load", methods = ['POST'])
+def loadWorkFlow():
+    param = json.loads(request.data)
+    filePath = param['filePath']
+
     try:
         componentGestioner.map_of_component = pickle.load(open(filePath, "rb"))
         resp = dict(ok=True)
@@ -117,7 +124,7 @@ def getStaticDescription(type) :
         for subclass in subclasses:
             if subclass.__name__ == sub:
                 #TODO CONFIGURATION READONLY
-                listAttr = []
+                listAttr = [attr.split(":") for attr in subclass.attr_description.split(",")]
                 resp={'ok':True, 'description':listAttr, 'strDesc': subclass.description }
                 return json.dumps(resp)
 
@@ -128,13 +135,21 @@ def getStaticDescription(type) :
 def getDescription(objId) :
     if request.method == 'GET' :
         component = componentGestioner.map_of_component[objId]
-        listAttr = ["TODO CONFIGURATION PAS READ ONLY"]
-        resp={'ok':True, 'id':objId, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
+        listAttr = json.dumps(component.__dict__)
+        resp={'ok':True,"class": component.__class__.__name__, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
         return json.dumps(resp)
 
     resp={'ok':False}
     return json.dumps(resp)
 
+@app.route("/setPathes/<reader_id>", methods = ['POST'])
+def setPathes(reader_id) :
+    component = componentGestioner.map_of_component[reader_id]
+    pathes = request.json['pathes']
+    component.setPathes(pathes)
+    resp={'ok':True}
+    return json.dumps(resp)
+    
 @app.route("/block/removeConnection", methods = ['POST'])
 def removeConnection() :
     if request.method == 'POST' :

@@ -1,10 +1,14 @@
+
 var dictType = {'Camera stream Reader': [0,1], 'Picture Writer' : [1,0], 'Picture Reader' : [0,1], 'Cropper' : [1,1], 'Gray Scale': [1,1], 'Chromakey':[2,1], 'Image Bluhrer' : [1,1], 'Splitter':[1,2], 'File Filter':[1,1], 'Joiner':[2,1]}
+
+/* Getting Handlebar templates */
+readerTemplate = loadTemplate('#reader-template');
 
 $(document).ready(function() {
 
-    var map = {};
-    var currentComponent = null;
-    var currentPicIdx = 0;
+  var map = {};
+  var currentComponent = null;
+  var currentPicIdx = 0;
 
   var endpointStyle = {
       isTarget:true,
@@ -65,6 +69,7 @@ var dropFunction = function(params){
     else {
         return result ;
     }
+
 }
 
 var clearTableSelection = function() {
@@ -88,6 +93,7 @@ var onClickElement = function(obj){
       contentType: 'application/json;charset=UTF-8',
       success : function(data){
         currentComponent = data;
+        console.log(data);
         currentPicIdx = 0;
         $("#description").val(data.strDesc);
         if(data.images.length <= 1)
@@ -105,7 +111,7 @@ var onClickElement = function(obj){
           $("#renderPic").attr('src', data.images[0]);
         }
 
-        //TODO CONFIGURATION NOT READONLY
+        $("#configuration").html(readerTemplate({"id" :obj.getAttribute('id')}));
   }});
 }
 
@@ -325,3 +331,17 @@ var addDraggableComponent = function(id, type){
             break;
 
 }};
+
+
+var submitReader = function() {
+  var path = $(".reader").find('input').val();
+  var id = $(".reader").find("strong").text();
+  $.ajax({
+      url: '/setPathes/' + id,
+      type: 'POST',
+      async: false,
+      dataType: "json",
+      data: JSON.stringify({"pathes":  path}),
+      contentType: 'application/json;charset=UTF-8',
+      });
+};
