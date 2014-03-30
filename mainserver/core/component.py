@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time, os
-from SimpleCV import Image
-from SimpleCV import Color
+from SimpleCV import Image, Color
 import cv2
 
 nbComponents = 0
