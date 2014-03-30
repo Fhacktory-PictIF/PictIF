@@ -13,6 +13,15 @@ def generateId():
     nbComponents += 1
     return nbComponents
 
+def createImage(path):
+        date = time.ctime(os.path.getctime(path))
+        name = os.path.splitext(os.path.basename(path))[0]
+        extension = os.path.splitext(path)[1]
+        if extension in ImageData.extensions:
+            return ImageData(path, date, name, extension)
+        else :
+            return None
+
 class Component(object):
     ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
@@ -158,7 +167,9 @@ class O():
 
 class ImageData():
     """Image object"""
-    def __init__(self, path):
+    extensions = [".jpeg",".png",".jpg"]
+
+    def __init__(self, path, date, name, extension):
         self.path = path
         self.date = time.ctime(os.path.getctime(path))
         self.name = os.path.splitext(os.path.basename(path))[0]
@@ -300,7 +311,7 @@ class FacesDetector(Component):
                     o = img[y: y + h, x: x + w]
                     path = dir_tmp + i.name + str(self.id) + str(k) + '.jpg'
                     cv2.imwrite(dir_tmp + i.name + str(self.id) + str(k) + '.jpg', o)
-                    image = ImageData(path)
+                    image = createImage(path)
                     image.date = time.ctime(os.path.getctime(image.path))
                     self.images.append(image)
                     #for c,k in zip(contours,range(len(contours))):
@@ -315,35 +326,36 @@ class Recognizer(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.patterns = []
         self.parent2 = None
-
-    def setParent2(self, parent):
-        self.parent2 = parent
-        if parent is None :
-            self.executed = False
-
-    def delParent2(self):
-        self.parent2 = None
-        self.executed = False
+        self.parent3 = None
 
     def process(self):
 
         if not self.executed and self.parent is not None:
             self.executeParent()
 
-            self.images = self.parent.images
-
-            self.patterns = self.parent2.images
-
+            #positives
             f = open('../test/positives.dat', 'w')
-            for i in self.images:
-                f.write(i.path + "\n")
+            for i in self.parent.images:
+                i.load()
+                f.write(i.path + " 1 0 0 " + str(i.image.width) + " " + str(i.image.height) + "\n")
+                i.unload()
+            nb_positives = len(self.parent.images)
             f.close()
 
-            #retvalue = os.system("ps -p 2993 -o time --no-headers")
+            #negatives
+            f = open('../test/negatives.dat', 'w')
+            for i in self.parent2.images:
+                i.load()
+                f.write(i.path + "\n")
+                i.unload()
+            nb_negatives = len(self.parent2.images)
+            f.close()
 
-            #O.write(self.images,dir_tmp,self.id)
+            os.system("opencv_createsamples -info ../test/positives.dat -vec ../test/positives.vec -num "+ str(nb_positives) +" -w 48 -h 48")
+            os.system("opencv_traincascade -data ../../XML/ -vec ../test/positives.vec -w 48 -h 48 -bg ../test/negatives.dat -numPos "+ str(nb_positives) + " -numNeg "+ str(nb_negatives))
+
+            
 
 class Reader(Component):
     attr_description = Component.attr_description + "pathes:list(string):lists of file or folder pathes,\
@@ -380,7 +392,9 @@ class Reader(Component):
             images = []
             if os.path.isfile(path):
                 # print "Considering file1 ", path
-                images.append(ImageData(path))
+                i = createImage(path)
+                if i is not None:
+                    images.append(i)
             elif os.path.isdir(path):
                 # print "Considering directory ", path
                 for dirname, dirnames, filenames in os.walk(path):
@@ -388,8 +402,9 @@ class Reader(Component):
                     # print "Directory ", dirname," has subfiles ", filenames
                     for filename in filenames:
                         # print "Considering file2 ", filename, " of ", dirname
-                        img = ImageData(os.path.join(dirname, filename))
-                        images.append(img)
+                        img = createImage(os.path.join(dirname, filename))
+                        if img is not None:
+                            images.append(img)
         self.images = list(set(images))
 
 class Writer(Component):
