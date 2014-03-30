@@ -139,7 +139,7 @@ function reset() {
 */
 
 function execute() {
-    notify("Executing node TODO...");
+    notify("Executing node...");
     $.ajax({
         url: '/block/execute/' + currentComponent.id,
         type: 'POST',

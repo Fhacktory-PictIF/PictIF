@@ -8,7 +8,7 @@ from operator import add
 import cv2
 
 nbComponents = 0
-dir_tmp = "../test/treated/"
+dir_tmp = "test/treated/cam/"
 
 def generateId():
     global nbComponents
@@ -436,7 +436,7 @@ class Reader(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.pathes = None
+        self.pathes = ["./test"]
         self.length = None
         self.key_points = []
         self.mean_colors = []

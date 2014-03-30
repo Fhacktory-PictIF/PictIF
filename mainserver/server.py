@@ -47,7 +47,7 @@ def getBlocksList():
 
 @app.route("/block/execute/<blockId>", methods = ['POST'])
 def executeBlock(blockId):
-    componentGestioner.map_of_component[blockId].process()
+    componentGestioner.map_of_component[str(blockId)].process()
     resp = dict(ok=True)
     return json.dumps(resp)
 
@@ -134,9 +134,11 @@ def getStaticDescription(type) :
 @app.route("/getDescription/<objId>", methods = ['GET'])
 def getDescription(objId) :
     if request.method == 'GET' :
-        component = componentGestioner.map_of_component[objId]
-        listAttr = json.dumps(component.__dict__)
-        resp={'ok':True,"class": component.__class__.__name__, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
+        component = componentGestioner.map_of_component[str(objId)]
+        #listAttr = json.dumps(component.__dict__)
+        #resp={'ok':True,"class": component.__class__.__name__, 'id':objId, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
+        listAttr = []
+        resp={'ok':True,"class": component.__class__.__name__, 'id':objId, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
         return json.dumps(resp)
 
     resp={'ok':False}
@@ -149,7 +151,7 @@ def setPathes(reader_id) :
     component.setPathes(pathes)
     resp={'ok':True}
     return json.dumps(resp)
-    
+
 @app.route("/block/removeConnection", methods = ['POST'])
 def removeConnection() :
     if request.method == 'POST' :
