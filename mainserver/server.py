@@ -124,13 +124,12 @@ def getStaticDescription(type) :
     resp={'ok':False}
     return json.dumps(resp)
 
-@app.route("/getDescription", methods = ['GET'])
-def getDescription() :
+@app.route("/getDescription/<objId>", methods = ['GET'])
+def getDescription(objId) :
     if request.method == 'GET' :
-        blockId = json.loads(request.data)
-        component = componentGestioner.map_of_component[blockId]
-        listAttr = ["TODO"]
-        resp={'ok':True, 'attrs':listAttr, 'images' : component.images}
+        component = componentGestioner.map_of_component[objId]
+        listAttr = ["TODO CONFIGURATION PAS READ ONLY"]
+        resp={'ok':True, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
         return json.dumps(resp)
 
     resp={'ok':False}

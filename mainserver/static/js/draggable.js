@@ -53,15 +53,15 @@ var dropFunction = function(params){
 
 var onClickElement = function(obj){
   $.ajax({
-      url: '/getDescription',
+      url: '/getDescription/' + obj.getAttribute('id'),
       type: 'GET',
       async: false,
       dataType: "json",
-      data: JSON.stringify(obj.getAttribute('id')),
       contentType: 'application/json;charset=UTF-8',
       success : function(data){
         currentComponent = data;
         currentPicIdx = 0;
+        $("#description").val(data.strDesc);
         if(data.images.length <= 1)
         {
           $("#nextButton").attr("disabled", "disabled");
@@ -76,6 +76,8 @@ var onClickElement = function(obj){
         {
           $("#renderPic").attr('src', data.images[0]);
         }
+
+        //TODO CONFIGURATION NOT READONLY
   }});
 }
 
@@ -94,7 +96,7 @@ var displayStaticDescription = function(blockType){
         $("#description").val(data.strDesc);
         $("#renderPic").attr('src', "../static/img/upload_b.png");
 
-        //TODO add configuration (readonly mode)
+        //TODO CONFIGURATION READONLY
         for (i=0; i<data.description.lenght; i++)
           switch (data.description[i][2])
           {
