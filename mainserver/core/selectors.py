@@ -87,6 +87,10 @@ class Joiner(Component):
         if parent is None :
             self.executed = False
 
+    def delParent2(self):
+        self.parent2 = None
+        self.executed = False
+
     def process(self):
         self.images = list(set(self.parent.images + self.parent2.images))
         self.executed = True
