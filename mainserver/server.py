@@ -81,6 +81,7 @@ def addConnection() :
         parentId, currentId = param['parentId'], param['currentId']
         current_component = componentGestioner.map_of_component.get(currentId)
         parent_component = componentGestioner.map_of_component.get(parentId)
+        
         #Addcomponent to parent
         if (current_component != None and parent_component != None and current_component.parent == None) :
             componentGestioner.map_of_component[currentId].parent = componentGestioner.map_of_component[parentId]

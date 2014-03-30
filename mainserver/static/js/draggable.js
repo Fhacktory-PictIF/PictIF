@@ -1,5 +1,4 @@
 
-var i = 0;
 
 $(document).ready(function() {
 
@@ -45,9 +44,25 @@ var detachFunction = function(conn){
             }
 };
 
+var dropFunction = function(params){
+    var result = confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
+    if ( result == true ) {
+                $.ajax({
+                    url: '/block/addConnection',
+                    type: 'POST',
+                    async: true,
+                    dataType: "json",
+                    data: JSON.stringify({"currentId":  params.targetId , "parentId":params.sourceId }),
+                    contentType: 'application/json;charset=UTF-8',
+                    success : function(data){
+                        //TODO Recuperer les donnees et ajouter un bloc au canevas
+                    }});
+            }
+}
+
 var addDraggableComponent = function(id, type){
-    var newState = $('<div>').attr('id', 'state' + i).addClass('itemDrag');
-    var title = $('<div>').addClass('title').text('State ' + i);
+    var newState = $('<div>').attr('id', id).addClass('itemDrag');
+    var title = $('<div>').addClass('title').text(type);
     var connect = $('<div>').addClass('connect');
 
     newState.css({
@@ -59,19 +74,19 @@ var addDraggableComponent = function(id, type){
     $('#container').append(newState);
     jsPlumb.draggable($(".itemDrag"));
 
-    jsPlumb.addEndpoint('state'+i, {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+    jsPlumb.addEndpoint(id, {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
         beforeDetach: function(conn) {
-            detachFunction(conn);
+            return detachFunction(conn);
         }});
-    jsPlumb.addEndpoint('state'+i,  {
+    jsPlumb.addEndpoint(id,  {
         anchor:"BottomLeft",
         isTarget:true,
         beforeDrop: function(params) {
-            return confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
+             dropFunction(params);
+            
         }
     });
 
-    jsPlumb.addEndpoint('state'+i,  {anchor:"TopLeft",isTarget:true});
+    jsPlumb.addEndpoint(id,  {anchor:"TopLeft",isTarget:true});
 
-    i++;
 };
