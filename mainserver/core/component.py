@@ -61,13 +61,12 @@ class Component(object):
 
 
 class Splitter(Component):
-    """Splits one stream into two based on one criteria"""
-    description = "Splits one data stream into two data streams depending whether they match some specific criteria"
+    """Splits one stream into two based on random"""
+    description = "Splits one data stream into two data streams depending whether they match some specific random"
     attr_description = Component.attr_description + "images2:list(imageData):second output"
 
     def __init__(self):
         Component.__init__(self)
-        self.criteria = None
         self.images2 = None
 
     def process(self):
@@ -75,11 +74,14 @@ class Splitter(Component):
             self.executeParent()
             self.images = []
             self.images2 = []
-
+            i=2
             for image in self.parent.images:
-                # TODO define split criteria
-                pass
-
+                print "Considering ", image.path
+                if i == 2:
+                    self.images.append(image)
+                else:
+                    self.images2.append(image)
+                i = 2 - i
             self.executed = True
 
 
