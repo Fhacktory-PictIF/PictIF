@@ -21,8 +21,10 @@ class Reader(Component):
         self.read(self.pathes)
         self.length = len(self.images)
         for image in self.images:
-            image.load()            
-        self.key_points = [i.image.findKeypoints() for i in self.images]
+            image.load()          
+            # image.image.show()
+            # time.sleep(1)  
+        # self.key_points = [i.image.findKeypoints() for i in self.images]
         self.mean_colors = [k.meanColor() for k in self.key_points]
         self.executed = True
 
@@ -41,7 +43,7 @@ class Reader(Component):
                         # print "Considering file2 ", filename, " of ", dirname
                         img = ImageData(os.path.join(dirname, filename))
                         images.append(img)
-            self.images = images
+        self.images = images
 
 class Writer(Component):
     """Writes pics on disc"""
@@ -51,6 +53,6 @@ class Writer(Component):
         self.path = ""
         self.osef = "File path:string,etc."
         
-    def process():
+    def process(self):
         O.write(self.images, self.path, "")
         self.executed = True

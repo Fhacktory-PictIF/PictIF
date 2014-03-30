@@ -13,7 +13,7 @@ class Splitter(Component):
         criteria = None
         self.images2 = None
 
-    def process():
+    def process(self):
         self.images = []
         self.images2 = []
 
@@ -36,19 +36,19 @@ class RowFilter(Component):
         self.extensions = None
         self.extension_keep = True
 
-    def set_time_reference(time_reference):
+    def set_time_reference(self, time_reference):
         self.time_reference = time_reference
         self.extensions = None
 
-    def set_extensions(extensions):
+    def set_extensions(self, extensions):
         self.time_reference = None
         self.extensions = extensions
 
-    def process():
+    def process(self):
         if self.images is None:
             self.images = []
         tempI = set(self.images + self.parent.images)
-        tempO = {}
+        tempO = set()
         if self.time_reference is not None:
             for image in tempI:
                 if self.time_relative == 1:
@@ -62,9 +62,9 @@ class RowFilter(Component):
                         tempO.add(image)
         elif self.extensions is not None:
             if not self.extension_keep:
-                tempO += set([im for im in self.parent.images if im.extension in self.extensions])
+                tempO = tempO.union(set([im for im in self.parent.images if im.extension in self.extensions]))
             else:
-                tempO += set([im for im in self.parent.images if im.extension not in self.extensions])
+                tempO = tempO.union(set([im for im in self.parent.images if im.extension not in self.extensions]))
         self.images = list(tempO)
         
 class Joiner(Component):
@@ -74,11 +74,11 @@ class Joiner(Component):
         self.description = "Joins two data streams into one avoiding duplicates."
         self.parent2 = None
     
-    def setParent2(parent):
+    def setParent2(self, parent):
         self.parent2 = parent
         if parent is None :
             self.executed = False
 
-    def process():
+    def process(self):
         self.images = list(set(self.parent.images + self.parent2.images))
         self.executed = True
