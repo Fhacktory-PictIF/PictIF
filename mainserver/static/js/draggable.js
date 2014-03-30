@@ -68,8 +68,34 @@ var dropFunction = function(params){
     }
 }
 
+var onClickElement = function(obj){
+    $.ajax({
+        url: '/getDescription',
+        type: 'POST',
+        async: false,
+        dataType: "json",
+        data: JSON.stringify(obj.getAttribute('id')),
+        contentType: 'application/json;charset=UTF-8',
+        success : function(data){
+            for (i=0; i<data.lenght; i++)
+            switch (data[i][2])
+        {
+            case "int":
+
+
+            case "string":
+
+
+            case ""
+        }
+    }});
+
+}
+
+
+
 var addDraggableComponent = function(id, type){
-    var newState = $('<div>').attr('id', String(id)).attr('onclick',"javascript: onClickElement()").addClass('itemDrag');
+    var newState = $('<div>').attr('id', String(id)).attr('onclick',"javascript: onClickElement(this)").addClass('itemDrag');
     var title = $('<div>').addClass('title').text(type);
     var connect = $('<div>').addClass('connect');
 

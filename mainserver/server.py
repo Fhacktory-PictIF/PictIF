@@ -92,6 +92,18 @@ def addConnection() :
     resp={'ok':False}
     return json.dumps(resp)
 
+@app.route("/getDescription", methods = ['POST'])
+def getDescription() :
+    if request.method == 'POST' :
+        blockId = json.loads(request.data)
+        component = componentGestioner.map_of_component[blockId]
+        listAttr = [attr.split(":") for attr in component.attr_description.split(",") ]
+        resp={'ok':True, 'description':listAttr, 'images' : component.images }
+
+    resp={'ok':False}
+    return json.dumps(resp)
+
+
 @app.route("/block/removeConnection", methods = ['POST'])
 def removeConnection() :
     if request.method == 'POST' :
