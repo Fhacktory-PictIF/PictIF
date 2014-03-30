@@ -71,6 +71,8 @@ $('#search').on('input', function() {
 function notify(msg)
 {
     $('#console').val($('#console').val() + msg);
+    var textarea = document.getElementById('console');
+    textarea.scrollTop = textarea.scrollHeight;
 }
 
 function selectLine(obj) {
@@ -138,12 +140,17 @@ function execute() {
     notify("Done\n");
 }
 
+function choose(inputId) {
+    $("#" + inputId).trigger('click')
+}
+
 function save() {
     $("#saveButton").attr("disabled", "disabled");
-    notify("Saving work flow...");
-    //Save everything
+    var filePath = $("#saveInput").val();
+    notify("Saving work flow to " + filePath + "...");
+
     $.ajax({
-        url: '/save',
+        url: '/save/' + filePath,
         type: 'POST',
         dataType: "json",
         data: JSON.stringify("data"),
@@ -156,9 +163,34 @@ function save() {
             {
                 notify("\nError: workflow could not be saved\n");
             }
-            $("#saveButton").removeAttr("disabled");
         }});
 
+    $("#loadButton").removeAttr("disabled");
+}
+
+function load() {
+    $("#loadButton").attr("disabled", "disabled");
+    var filePath = $("#loadInput").val();
+    notify("Loading work flow from " + filePath + "...");
+
+    $.ajax({
+        url: '/load/' + filePath,
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+            if(data.ok)
+            {
+                notify("Done\n");
+                notify("TODO: CLEAN + UPDATE UI\n");
+            }
+            else
+            {
+                notify("\nError: workflow could not be loaded\n");
+            }
+        }});
+
+    $("#loadButton").removeAttr("disabled");
 }
 
 $("#addButton").attr("disabled", "disabled");

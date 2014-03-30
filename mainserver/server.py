@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, jsonify, Blueprint, current_app
+import cPickle as pickle
 import json
+import os.path
 
 from core.component import Component
 
@@ -45,14 +47,14 @@ def getBlocksList():
 
 @app.route("/block/execute/<blockId>", methods = ['POST'])
 def executeBlock(blockId):
-    resp = dict(ok=True)
-
-    return json.dumps(resp)
-
-@app.route("/block/reset/<blockId>", methods = ['POST'])
-def resetBlock(blockId):
+    componentGestioner.map_of_component[blockId].execute()
     resp = dict(ok=True)
     return json.dumps(resp)
+
+# @app.route("/block/reset/<blockId>", methods = ['POST'])
+# def resetBlock(blockId):
+#     resp = dict(ok=True)
+#     return json.dumps(resp)
 
 @app.route("/block/add/<blockType>", methods = ['POST'])
 def getBlockFromType(blockType):
@@ -68,10 +70,25 @@ def getBlockFromType(blockType):
     resp = {'ok': False}
     return json.dumps(resp)     
 
-@app.route("/save", methods = ['POST'])
-def saveWorkFlow():
+@app.route("/save/<filePath>", methods = ['POST'])
+def saveWorkFlow(filepath):
+    for key, component in componentGestioner:
+        for image in component.images:
+            image.load()
+            image.unload()
+    pickle.dump(componentGestioner, open("saved.b", "wb"))
     resp = dict(ok=True)
     return json.dumps(resp)
+
+@app.route("/load/<filePath>", methods = ['POST'])
+def loadWorkFlow(filePath):
+    try:
+        componentGestioner.map_of_component = pickle.load(open(filePath, "rb"))
+        resp = dict(ok=True)
+        return json.dumps(resp)
+    except:
+        resp = dict(ok=False)
+        return json.dumps(resp)
 
 @app.route("/block/addConnection", methods = ['POST'])
 def addConnection() :

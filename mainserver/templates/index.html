@@ -4,19 +4,17 @@
 
 {% block body %}
 {% include "header.html" %}
-    <link href="/static/css/styleDrag.css" rel="stylesheet">
-        <link href="/static/css/bootstrap.css" rel="stylesheet">
-    <link href="/static/css/bootstrap-select.css" rel="stylesheet">
+<link href="/static/css/styleDrag.css" rel="stylesheet">
+<link href="/static/css/bootstrap.css" rel="stylesheet">
+<link href="/static/css/bootstrap-select.css" rel="stylesheet">
+<link href="/static/css/style.css" rel="stylesheet">
 
-    <link href="/static/css/style.css" rel="stylesheet">
 <div class="row">
     <div class="col-md-3" >
-        <div class="row-xs-11">
-            <div class="search">
-                <div class="input-group">
-                    <span class="input-group-addon">Search</span>
-                    <input type="text" id="search" class="form-control" placeholder="Blocks filter">
-                </div>
+        <div class="search">
+            <div class="input-group">
+                <span class="input-group-addon">Search</span>
+                <input type="text" id="search" class="form-control" placeholder="Blocks filter">
             </div>
         </div>
 
@@ -41,8 +39,14 @@
 
         <div  align="right">
             <!--<input type="button" class="btn btn-default" value="Reset" id="resetButton" onclick="reset()">-->
+
+            <input type="file" id="loadInput" style="display:none" onchange="load()">
+            <input type="button" class="btn btn-default" value="Import" id="loadButton" onclick="choose('loadInput')">
+
             <input type="button" class="btn btn-default" value="Execute" id="executeButton" onclick="execute()">
-            <input type="button" class="btn btn-default" value="Save" id="saveButton" onclick="save()">
+
+            <input type="file" id="saveInput" style="display:none" onchange="save()">
+            <input type="button" class="btn btn-default" value="Export" id="saveButton" onclick="choose('saveInput')">
         </div>
     </div>
 
