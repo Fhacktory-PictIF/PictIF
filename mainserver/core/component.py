@@ -15,12 +15,8 @@ def generateId():
 class Component(object):
     ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
-<<<<<<< HEAD
-    selectors = dict(RowFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
     dir_tmp = tempfile.gettempdir()
-=======
     selectors = dict(FileFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
->>>>>>> 65ca49b14cbc6ec94fb0c7291560b7101f060ff8
     statistics = []
     #classmere.__subclasses__() return list
 
@@ -103,10 +99,7 @@ class FileFilter(Component):
         if not self.executed and self.parent is not None:
             self.executeParent()
 
-            if self.images is None:
-                self.images = []
-
-            tempI = set(self.images + self.parent.images)
+            tempI = set(self.parent.images)
             tempO = set()
             if self.time_reference is not None:
                 for image in tempI:
@@ -158,7 +151,9 @@ class O():
     @classmethod
     def write(cls, images, path, ComponentId):
         for image in images:
-            image.image.save(path + image.name + str(ComponentId) + image.extension)
+            image.path = path + image.name + str(ComponentId) + image.extension
+            image.image.save(image.path)
+            image.date = time.ctime(os.path.getctime(image.path))
 
 class ImageData():
     """Image object"""
@@ -168,7 +163,6 @@ class ImageData():
         self.name = os.path.splitext(os.path.basename(path))[0]
         self.extension = os.path.splitext(path)[1]
         self.image = None
-        self.suffixes = ""
 
     def load(self):
         self.image = Image(self.path)
@@ -315,8 +309,6 @@ class FacesDetector(Component):
 
             O.write([self.image],dir_tmp,self.id)
             self.image.unload()
-
-
 
 class Reader(Component):
     attr_description = Component.attr_description + "pathes:list(string):lists of file or folder pathes,\
