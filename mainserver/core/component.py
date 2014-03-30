@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import time, os
+from SimpleCV import Image
+
 nbComponents = 0
 
 def generateId():
