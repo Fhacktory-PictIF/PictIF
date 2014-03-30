@@ -29,7 +29,7 @@ $(document).ready(function() {
 
 });
 
-var addComponent function(e){
+var addComponent = function(e){
     var newState = $('<div>').attr('id', 'state' + i).addClass('itemDrag');
     
     var title = $('<div>').addClass('title').text('State ' + i);
@@ -47,13 +47,17 @@ var addComponent function(e){
     $('#container').append(newState);
     jsPlumb.draggable($(".itemDrag"));
 
-    jsPlumb.addEndpoint('state'+i, {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle"});
+    jsPlumb.addEndpoint('state'+i, {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+        beforeDetach: function(conn) {
+            return confirm("confirm detach ?");
+        }});
     jsPlumb.addEndpoint('state'+i,  {
         anchor:"BottomLeft",
         isTarget:true,
         beforeDrop: function(params) {
             return confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
-        }}
+        }
+        }
     );
 
     jsPlumb.addEndpoint('state'+i,  {anchor:"TopLeft",isTarget:true});
