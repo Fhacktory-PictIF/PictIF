@@ -46,7 +46,6 @@ var dropFunction = function(params){
       contentType: 'application/json;charset=UTF-8',
       success : function(data){
         return data.ok;
-        //TODO Recuperer les donnees et ajouter un bloc au canevas
       }});
 }
 
