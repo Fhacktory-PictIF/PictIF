@@ -84,6 +84,7 @@ var clearTableSelection = function() {
 var onClickElement = function(obj){
   clearTableSelection();
   $("#executeButton").removeAttr("disabled");
+  //$("#removeButton").removeAttr("disabled"); TODO remove when operational
 
   $.ajax({
       url: '/getDescription/' + obj.getAttribute('id'),
@@ -189,9 +190,9 @@ var addDraggableComponent = function(id, type){
                 beforeDetach: function(conn) {
                     return detachFunction(conn);
             }});
-        //fin case 
+        //fin case
             break;
-          
+
         case String([0,2]):
             //source out Top
             jsPlumb.addEndpoint(String(id), {anchor:"TopRight", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
@@ -219,19 +220,19 @@ var addDraggableComponent = function(id, type){
                 anchor:"Left",
                 isTarget:true,
                 beforeDrop: function(params) {
-                    
+
                     return dropFunction(params);
                 }
             });
             break;
-           
+
         case String([2,1]):
             //target In Bot
             jsPlumb.addEndpoint(String(id),  {
                 anchor:"BottomLeft",
                 isTarget:true,
                 beforeDrop: function(params) {
-                    
+
                     return dropFunction(params);
                 }
             });
@@ -241,10 +242,10 @@ var addDraggableComponent = function(id, type){
                 anchor:"TopLeft",
                 isTarget:true,
                 beforeDrop: function(params) {
-                    
+
                     return dropFunction(params);
                 }
-            });    
+            });
 
             //source out Middle
             jsPlumb.addEndpoint(String(id), {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
@@ -262,7 +263,7 @@ var addDraggableComponent = function(id, type){
                 anchor:"Left",
                 isTarget:true,
                 beforeDrop: function(params) {
-                    
+
                     return dropFunction(params);
                 }
             });
@@ -293,14 +294,14 @@ var addDraggableComponent = function(id, type){
                     return detachFunction(conn);
             }});
             break;
-            
+
         case String([2,0]):
             //target In Bot
             jsPlumb.addEndpoint(String(id),  {
                 anchor:"BottomLeft",
                 isTarget:true,
                 beforeDrop: function(params) {
-                    
+
                     return dropFunction(params);
                 }
             });
@@ -310,10 +311,10 @@ var addDraggableComponent = function(id, type){
                 anchor:"TopLeft",
                 isTarget:true,
                 beforeDrop: function(params) {
-                    
+
                     return dropFunction(params);
                 }
-            });    
+            });
             break;
 
         case String([1,0]):
@@ -323,7 +324,7 @@ var addDraggableComponent = function(id, type){
                 anchor:"Left",
                 isTarget:true,
                 beforeDrop: function(params) {
-                    
+
                     return dropFunction(params);
                 }
             });

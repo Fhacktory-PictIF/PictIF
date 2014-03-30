@@ -85,6 +85,8 @@ function selectLine(obj) {
     var idLigne=obj.id;
     obj.className="danger";
     $("#addButton").removeAttr("disabled");
+    $("#executeButton").attr("disabled", "disabled");
+    $("#removeButton").attr("disabled", "disabled");
 
     if (oldObj!=null) {
         oldObj.className = "";
@@ -139,14 +141,35 @@ function reset() {
 function execute() {
     notify("Executing node TODO...");
     $.ajax({
-        url: '/block/execute/' + 'TODOOOOO',
+        url: '/block/execute/' + currentComponent.id,
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+            if(data.ok)
+            {
+                notify("Done\n");
+            }
+            else
+            {
+                notify("\nAn error occurred during the execution\n");
+            }
+
+        }});
+}
+
+function remove() {
+    /*
+    $.ajax({
+        url: '/block/execute/' + data.id,
         type: 'POST',
         dataType: "json",
         data: JSON.stringify("data"),
         success : function(data){
 
         }});
-    notify("Done\n");
+    notify("Node \n");
+    */
 }
 
 function choose(inputId) {
@@ -227,6 +250,9 @@ function cleanDisplay()
 
 cleanDisplay();
 $("#addButton").attr("disabled", "disabled");
+$("#executeButton").attr("disabled", "disabled");
+$("#removeButton").attr("disabled", "disabled");
+$("#saveButton").removeAttr("disabled");
 $("#search").val("");
 $("#console").val("");
 fillInitTable();
