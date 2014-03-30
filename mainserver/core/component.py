@@ -28,7 +28,7 @@ class Component(object):
     ioComponents = dict(CamReader="Camera Stream Reader", Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey',ImageStack='Image Blurrer')
     dir_tmp = tempfile.gettempdir()
-    selectors = dict(FileFilter='File Filter', Joiner='Joiner')
+    selectors = dict(Splitter="File Splitter", FileFilter='File Filter', Joiner='Joiner')
     statistics = []
     #classmere.__subclasses__() return list
 
