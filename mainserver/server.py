@@ -94,10 +94,10 @@ def removeComponent() :
         if current_component != None :
             componentGestioner.map_of_component.pop(currentId)
             resp = {'ok': True}
-            return json.dump(resp) 
+            return json.dump(resp)
     resp = {'ok': False}
     return json.dump(resp)
 
-    
+
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8080, debug=True)
