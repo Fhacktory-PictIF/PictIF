@@ -50,7 +50,8 @@ def saveWorkFlow():
 @app.route("/block/addConnection", methods = ['POST'])
 def addConnection() :
     if request.method == 'POST' :
-        parentId, currentId = request.json['parentId'], request.json['currentId']
+        param = json.loads(request.data)
+        parentId, currentId = param['parentId'], param['currentId']
         current_component = componentGestioner.map_of_component.get(currentId)
         parent_component = componentGestioner.map_of_component.get(parentId)
         #Addcomponent to parent
@@ -63,13 +64,15 @@ def addConnection() :
             resp = {'ok': True}
             return json.dump(resp)
     resp={'ok':False}
-    return json.dump(resp)
+    return json.dumps(resp)
 
 @app.route("/block/removeConnection", methods = ['POST'])
 def removeConnection() :
     if request.method == 'POST' :
         #warning, the currentId is the one whose parent have to be suppressed.
-        parentId, currentId = request.json['parentId'], request.json['currentId']
+        print request.data
+        param = json.loads(request.data)
+        parentId, currentId = param['parentId'], param['currentId']
         current_component = componentGestioner.map_of_component.get(currentId)
         parent_component = componentGestioner.map_of_component.get(parentId)
         #Addcomponent to parent
@@ -77,12 +80,13 @@ def removeConnection() :
             if current_component.id == parentId :
                 current_component.parent = None
             resp = {'ok': True}
-            return json.dump(resp)
+            return json.dumps(resp)
         #TODO gestion du parent 2 elif(current_component != None and current_component.parent != None) :
             # current_component.setParent2(parent_component)
             # resp = {'ok': True}
             # return json.dump(resp)
     resp={'ok':False}
+    return json.dumps(resp)
 
 
 
@@ -96,7 +100,7 @@ def removeComponent() :
             resp = {'ok': True}
             return json.dump(resp) 
     resp = {'ok': False}
-    return json.dump(resp)
+    return json.dumps(resp)
 
     
 if __name__ == '__main__':

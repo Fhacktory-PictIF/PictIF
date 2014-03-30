@@ -29,9 +29,25 @@ $(document).ready(function() {
 
 });
 
+var detachFunction = function(conn){
+    var result = confirm("confirm detach ?");
+            alert(JSON.stringify({'currentId':JSON.stringify(conn.targetId), 'parentId':JSON.stringify(conn.sourceId)}));
+            if ( result == true ) {
+                $.ajax({
+                    url: '/block/removeConnection',
+                    type: 'POST',
+                    async: true,
+                    dataType: "json",
+                    data: JSON.stringify({"currentId": conn.targetId, "parentId":conn.sourceId}),
+                    contentType: 'application/json;charset=UTF-8',
+                    success : function(data){
+                        //TODO Recuperer les donnees et ajouter un bloc au canevas
+                    }});
+            }
+};
+
 var addComponent = function(e){
     var newState = $('<div>').attr('id', 'state' + i).addClass('itemDrag');
-    
     var title = $('<div>').addClass('title').text('State ' + i);
     var connect = $('<div>').addClass('connect');
 
@@ -40,16 +56,14 @@ var addComponent = function(e){
       'left': 20
     });
 
-
     newState.append(title);
-    
     
     $('#container').append(newState);
     jsPlumb.draggable($(".itemDrag"));
 
     jsPlumb.addEndpoint('state'+i, {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
         beforeDetach: function(conn) {
-            return confirm("confirm detach ?");
+            detachFunction(conn);
         }});
     jsPlumb.addEndpoint('state'+i,  {
         anchor:"BottomLeft",
@@ -57,8 +71,7 @@ var addComponent = function(e){
         beforeDrop: function(params) {
             return confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
         }
-        }
-    );
+    });
 
     jsPlumb.addEndpoint('state'+i,  {anchor:"TopLeft",isTarget:true});
     
