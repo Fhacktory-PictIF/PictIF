@@ -26,7 +26,7 @@ class Splitter(Component):
         self.executed = True
 
 
-class RowFilter(Component):
+class FileFilter(Component):
     """Filters some rows based on certains criteria 
     such as date, time, extension"""
     description = "Excludes from data stream files matching any of user's criteria"

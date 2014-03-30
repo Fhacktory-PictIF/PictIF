@@ -5,7 +5,7 @@ from IO import O, ImageData
 import os, time
 
 class Reader(Component):
-    attr_description = Component.attr_description + "pathes:list:lists of file or folder pathes,\
+    attr_description = Component.attr_description + "pathes:list(string):lists of file or folder pathes,\
             length:int:images count,key_points:list:osef,mean_colors:list:osef2"
     description = "Creates a data stream from a file or a folder and its subfolders."
     
@@ -45,7 +45,7 @@ class Reader(Component):
                         # print "Considering file2 ", filename, " of ", dirname
                         img = ImageData(os.path.join(dirname, filename))
                         images.append(img)
-        self.images = images
+        self.images = list(set(images))
 
 class Writer(Component):
     """Writes pics on disc"""
