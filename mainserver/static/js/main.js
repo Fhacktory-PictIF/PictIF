@@ -138,12 +138,16 @@ function execute() {
     notify("Done\n");
 }
 
-function save(filePath) {
+function save() {
+    $("#saveButton").click(function () {
+        $("#saveInput").trigger('click');
+    });
+
     $("#saveButton").attr("disabled", "disabled");
     notify("Saving work flow to " + filePath + "...");
     //Save everything
     $.ajax({
-        url: '/save/', + filePath
+        url: '/save/' + filePath,
         type: 'POST',
         dataType: "json",
         data: JSON.stringify("data"),
@@ -157,6 +161,29 @@ function save(filePath) {
                 notify("\nError: workflow could not be saved\n");
             }
             $("#saveButton").removeAttr("disabled");
+        }});
+}
+
+function load(filePath) {
+    $("#loadButton").attr("disabled", "disabled");
+    notify("Loading work flow from " + filePath + "...");
+    //Save everything
+    $.ajax({
+        url: '/load/' + filePath,
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+            if(data.ok)
+            {
+                notify("Done\n");
+                notify("TODO: CLEAN + UPDATE UI\n");
+            }
+            else
+            {
+                notify("\nError: workflow could not be loaded\n");
+            }
+            $("#loadButton").removeAttr("disabled");
         }});
 }
 

@@ -16,7 +16,7 @@ def generateId():
 class Component(object):
     ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
-    selectors = dict(RowFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
+    selectors = dict(FileFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
     statistics = []
     #classmere.__subclasses__() return list
 
