@@ -8,7 +8,7 @@ from operator import add
 import cv2
 
 nbComponents = 0
-dir_tmp = "../test/treated/"
+dir_tmp = "static/test/treated/cam/"
 
 def generateId():
     global nbComponents
@@ -28,7 +28,7 @@ class Component(object):
     ioComponents = dict(CamReader="Camera Stream Reader", Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey',ImageStack='Image Blurrer')
     dir_tmp = tempfile.gettempdir()
-    selectors = dict(FileFilter='File Filter', Joiner='Joiner')
+    selectors = dict(Splitter="File Splitter", FileFilter='File Filter', Joiner='Joiner')
     statistics = []
     #classmere.__subclasses__() return list
 
@@ -61,13 +61,12 @@ class Component(object):
 
 
 class Splitter(Component):
-    """Splits one stream into two based on one criteria"""
-    description = "Splits one data stream into two data streams depending whether they match some specific criteria"
+    """Splits one stream into two based on random"""
+    description = "Splits one data stream into two data streams depending whether they match some specific random"
     attr_description = Component.attr_description + "images2:list(imageData):second output"
 
     def __init__(self):
         Component.__init__(self)
-        self.criteria = None
         self.images2 = None
 
     def process(self):
@@ -75,11 +74,14 @@ class Splitter(Component):
             self.executeParent()
             self.images = []
             self.images2 = []
-
+            i=2
             for image in self.parent.images:
-                # TODO define split criteria
-                pass
-
+                print "Considering ", image.path
+                if i == 2:
+                    self.images.append(image)
+                else:
+                    self.images2.append(image)
+                i = 2 - i
             self.executed = True
 
 
@@ -192,7 +194,7 @@ class ImageStack(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.directory = ""
+        self.directory = "./static/test/treated/cam/"
         self.intensity = 5
 
     def process(self):
@@ -368,7 +370,7 @@ class Recognizer(Component):
             self.executeParent()
 
             #positives
-            f = open('../test/positives.dat', 'w')
+            f = open('../static/test/positives.dat', 'w')
             for i in self.parent.images:
                 i.load()
                 f.write(i.path + " 1 0 0 " + str(i.image.width) + " " + str(i.image.height) + "\n")
@@ -377,7 +379,7 @@ class Recognizer(Component):
             f.close()
 
             #negatives
-            f = open('../test/negatives.dat', 'w')
+            f = open('../static/test/negatives.dat', 'w')
             for i in self.parent2.images:
                 i.load()
                 f.write(i.path + "\n")
@@ -385,8 +387,8 @@ class Recognizer(Component):
             nb_negatives = len(self.parent2.images)
             f.close()
 
-            os.system("opencv_createsamples -info ../test/positives.dat -vec ../test/positives.vec -num "+ str(nb_positives) +" -w 48 -h 48")
-            os.system("opencv_traincascade -data ../../XML/ -vec ../test/positives.vec -w 48 -h 48 -bg ../test/negatives.dat -numPos "+ str(nb_positives) + " -numNeg "+ str(nb_negatives))
+            os.system("opencv_createsamples -info ../static/test/positives.dat -vec ../static/test/positives.vec -num "+ str(nb_positives) +" -w 48 -h 48")
+            os.system("opencv_traincascade -data ../../XML/ -vec ../static/test/positives.vec -w 48 -h 48 -bg ../static/test/negatives.dat -numPos "+ str(nb_positives) + " -numNeg "+ str(nb_negatives))
 
             cascade = cv2.CascadeClassifier('../../XML/haarcascade_frontalface_default.xml')
 
@@ -413,7 +415,7 @@ class CamReader(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.duration = 4 # in seconds
+        self.duration = 6 # in bi-seconds
 
     def process(self):
         self.images = []
@@ -434,7 +436,7 @@ class Reader(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.pathes = None
+        self.pathes = ["./static/test"]
         self.length = None
         self.key_points = []
         self.mean_colors = []
@@ -484,7 +486,7 @@ class Writer(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.path = "" #TODO
+        self.path = "./test/"
 
     def process(self):
         O.write(self.images, self.path, "Lol")

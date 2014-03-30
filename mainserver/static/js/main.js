@@ -38,6 +38,12 @@ Object.size = function(obj) {
     return size;
 };
 
+/* Handlebars */
+loadTemplate = function(template_id) {
+    var source = $(template_id).html();
+    return Handlebars.compile(source);
+}
+
 function checkSearch(data, words) {
     var table = document.getElementById('blockslist');
     table.innerHTML = "";
@@ -80,6 +86,7 @@ function selectLine(obj) {
     obj.className="danger";
     $("#addButton").removeAttr("disabled");
     $("#executeButton").attr("disabled", "disabled");
+    $("#removeButton").attr("disabled", "disabled");
 
     if (oldObj!=null) {
         oldObj.className = "";
@@ -134,6 +141,26 @@ function reset() {
 function execute() {
     notify("Executing node...");
     $.ajax({
+        url: '/block/execute/' + currentComponent.id,
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+            if(data.ok)
+            {
+                notify("Done\n");
+            }
+            else
+            {
+                notify("\nAn error occurred during the execution\n");
+            }
+
+        }});
+}
+
+function remove() {
+    /*
+    $.ajax({
         url: '/block/execute/' + data.id,
         type: 'POST',
         dataType: "json",
@@ -141,7 +168,8 @@ function execute() {
         success : function(data){
 
         }});
-    notify("Done\n");
+    notify("Node \n");
+    */
 }
 
 function choose(inputId) {
@@ -198,8 +226,8 @@ function load() {
         success : function(data){
             if(data.ok)
             {
-                cleanDisplay();
                 notify("Done\n");
+                notify("TODO: CLEAN + UPDATE UI\n");
             }
             else
             {
@@ -221,8 +249,9 @@ function cleanDisplay()
 }
 
 cleanDisplay();
-$("#loadButton").attr("disabled", "disabled");  //TORO remove when managed
 $("#addButton").attr("disabled", "disabled");
+$("#executeButton").attr("disabled", "disabled");
+$("#removeButton").attr("disabled", "disabled");
 $("#saveButton").removeAttr("disabled");
 $("#search").val("");
 $("#console").val("");

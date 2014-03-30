@@ -1,10 +1,14 @@
 
+var dictType = {'Camera Stream Reader': [0,1], 'Picture Writer' : [1,0], 'Picture Reader' : [0,1], 'Cropper' : [1,1], 'Gray Scale': [1,1], 'Chromakey':[2,1], 'Image Blurrer' : [1,1], 'File Splitter':[1,2], 'File Filter':[1,1], 'Joiner':[2,1]}
+
+/* Getting Handlebar templates */
+readerTemplate = loadTemplate('#reader-template');
 
 $(document).ready(function() {
 
-    var map = {};
-    var currentComponent = null;
-    var currentPicIdx = 0;
+  var map = {};
+  var currentComponent = null;
+  var currentPicIdx = 0;
 
   var endpointStyle = {
       isTarget:true,
@@ -24,29 +28,48 @@ $(document).ready(function() {
 });
 
 var detachFunction = function(conn){
-  $.ajax({
-      url: '/block/removeConnection',
-      type: 'POST',
-      async: false,
-      dataType: "json",
-      data: JSON.stringify({"currentId": conn.targetId, "parentId":conn.sourceId}),
-      contentType: 'application/json;charset=UTF-8',
-      success : function(data){
-        return data.ok;
-      }});
-}
+    var resultConf = confirm("confirm detach ?");
+    var result = false;
+            if ( resultConf == true ) {
+                $.ajax({
+                    url: '/block/removeConnection',
+                    type: 'POST',
+                    async: false,
+                    dataType: "json",
+                    data: JSON.stringify({"currentId": conn.targetId, "parentId":conn.sourceId}),
+                    contentType: 'application/json;charset=UTF-8',
+                    success : function(data){
+                        result = data.ok;
+                        //TODO Recuperer les donnees et ajouter un bloc au canevas
+                    }});
+                return result;
+            }
+            else {
+                return result;
+            }
+};
 
 var dropFunction = function(params){
-  $.ajax({
-      url: '/block/addConnection',
-      type: 'POST',
-      async: false,
-      dataType: "json",
-      data: JSON.stringify({"currentId":  params.targetId , "parentId":params.sourceId }),
-      contentType: 'application/json;charset=UTF-8',
-      success : function(data){
-        return data.ok;
-      }});
+    var resultConf = confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
+    var result = false;
+    if ( resultConf == true ) {
+                $.ajax({
+                    url: '/block/addConnection',
+                    type: 'POST',
+                    async: false,
+                    dataType: "json",
+                    data: JSON.stringify({"currentId": params.targetId , "parentId":params.sourceId }),
+                    contentType: 'application/json;charset=UTF-8',
+                    success : function(data){
+                        result = Boolean(data.ok);
+                        //TODO Recuperer les donnees et ajouter un bloc au canevas
+                    }});
+                return result;
+            }
+    else {
+        return result ;
+    }
+
 }
 
 var clearTableSelection = function() {
@@ -61,6 +84,7 @@ var clearTableSelection = function() {
 var onClickElement = function(obj){
   clearTableSelection();
   $("#executeButton").removeAttr("disabled");
+  //$("#removeButton").removeAttr("disabled"); TODO remove when operational
 
   $.ajax({
       url: '/getDescription/' + obj.getAttribute('id'),
@@ -70,6 +94,7 @@ var onClickElement = function(obj){
       contentType: 'application/json;charset=UTF-8',
       success : function(data){
         currentComponent = data;
+        console.log(data);
         currentPicIdx = 0;
         $("#description").val(data.strDesc);
         if(data.images.length <= 1)
@@ -86,8 +111,12 @@ var onClickElement = function(obj){
         {
           $("#renderPic").attr('src', data.images[0]);
         }
-
-        //TODO CONFIGURATION NOT READONLY
+        var content;
+        if (data.class == "Reader")
+        {
+            content = readerTemplate({"id" :obj.getAttribute('id')})
+        }
+        $("#configuration").html(content);
   }});
 }
 
@@ -144,30 +173,180 @@ var previous = function(){
 }
 
 var addDraggableComponent = function(id, type){
-    var newState = $('<div>').attr('id', String(id)).attr('onclick',"javascript: onClickElement(this)").addClass('itemDrag');
+    var newComponent = $('<div>').attr('id', String(id)).attr('onclick',"javascript: onClickElement(this)").addClass('itemDrag');
     var title = $('<div>').addClass('title').text(type);
     var connect = $('<div>').addClass('connect');
 
-    newState.css({
+    newComponent.css({
       'top': 20,
       'left': 20
     });
 
-    newState.append(title);
-    $('#container').append(newState);
+    newComponent.append(title);
+    $('#container').append(newComponent);
     jsPlumb.draggable($(".itemDrag"));
 
-    jsPlumb.addEndpoint(String(id), {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
-        beforeDetach: function(conn) {
-            return detachFunction(conn);
-        }});
-    jsPlumb.addEndpoint(String(id),  {
-        anchor:"BottomLeft",
-        isTarget:true,
-        beforeDrop: function(params) {
-            return dropFunction(params);
-        }
-    });
+    switch(String(dictType[type]))
+    {
+        case String([0,1]):
+            //source out Middle
+            jsPlumb.addEndpoint(String(id), {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+                beforeDetach: function(conn) {
+                    return detachFunction(conn);
+            }});
+        //fin case
+            break;
 
-    jsPlumb.addEndpoint(String(id),  {anchor:"TopLeft",isTarget:true});
+        case String([0,2]):
+            //source out Top
+            jsPlumb.addEndpoint(String(id), {anchor:"TopRight", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+                beforeDetach: function(conn) {
+                    return detachFunction(conn);
+                }});
+
+            //source out Bot
+            jsPlumb.addEndpoint(String(id), {anchor:"BotRight", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+                beforeDetach: function(conn) {
+                    return detachFunction(conn);
+                }});
+        //fin case
+            break;
+
+        case String([1,1]):
+            //source out Middle
+            jsPlumb.addEndpoint(String(id), {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+                beforeDetach: function(conn) {
+                    return detachFunction(conn);
+            }});
+
+            //target In Left
+            jsPlumb.addEndpoint(String(id),  {
+                anchor:"Left",
+                isTarget:true,
+                beforeDrop: function(params) {
+
+                    return dropFunction(params);
+                }
+            });
+            break;
+
+        case String([2,1]):
+            //target In Bot
+            jsPlumb.addEndpoint(String(id),  {
+                anchor:"BottomLeft",
+                isTarget:true,
+                beforeDrop: function(params) {
+
+                    return dropFunction(params);
+                }
+            });
+
+            //target In Top
+            jsPlumb.addEndpoint(String(id),  {
+                anchor:"TopLeft",
+                isTarget:true,
+                beforeDrop: function(params) {
+
+                    return dropFunction(params);
+                }
+            });
+
+            //source out Middle
+            jsPlumb.addEndpoint(String(id), {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+                beforeDetach: function(conn) {
+                    return detachFunction(conn);
+            }});
+
+        //fin case
+            break;
+
+        case String([1,2]):
+
+            //target In Left
+            jsPlumb.addEndpoint(String(id),  {
+                anchor:"Left",
+                isTarget:true,
+                beforeDrop: function(params) {
+
+                    return dropFunction(params);
+                }
+            });
+            //source out Top
+            jsPlumb.addEndpoint(String(id), {anchor:"TopRight", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+                beforeDetach: function(conn) {
+                    return detachFunction(conn);
+                }});
+
+            //source out Bot
+            jsPlumb.addEndpoint(String(id), {anchor:"BotRight", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+                beforeDetach: function(conn) {
+                    return detachFunction(conn);
+                }});
+            break;
+
+        case String([2,2]):
+
+            //source out Top
+            jsPlumb.addEndpoint(String(id), {anchor:"TopRight", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+                beforeDetach: function(conn) {
+                    return detachFunction(conn);
+            }});
+
+            //source out Bot
+            jsPlumb.addEndpoint(String(id), {anchor:"BotRight", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+                beforeDetach: function(conn) {
+                    return detachFunction(conn);
+            }});
+            break;
+
+        case String([2,0]):
+            //target In Bot
+            jsPlumb.addEndpoint(String(id),  {
+                anchor:"BottomLeft",
+                isTarget:true,
+                beforeDrop: function(params) {
+
+                    return dropFunction(params);
+                }
+            });
+
+            //target In Top
+            jsPlumb.addEndpoint(String(id),  {
+                anchor:"TopLeft",
+                isTarget:true,
+                beforeDrop: function(params) {
+
+                    return dropFunction(params);
+                }
+            });
+            break;
+
+        case String([1,0]):
+
+            //target In Left
+            jsPlumb.addEndpoint(String(id),  {
+                anchor:"Left",
+                isTarget:true,
+                beforeDrop: function(params) {
+
+                    return dropFunction(params);
+                }
+            });
+
+            break;
+
+}};
+
+
+var submitReader = function() {
+  var path = $(".reader").find('input').val();
+  var id = $(".reader").find("strong").text();
+  $.ajax({
+      url: '/setPathes/' + id,
+      type: 'POST',
+      async: false,
+      dataType: "json",
+      data: JSON.stringify({"pathes":  path}),
+      contentType: 'application/json;charset=UTF-8',
+      });
 };

@@ -39,3 +39,5 @@ nosetests.xml
 osef.py
 pickleTest.py
 *.b
+
+mainserver/test/treated/cam/*
