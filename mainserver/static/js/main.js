@@ -79,7 +79,6 @@ function selectLine(obj) {
     var idLigne=obj.id;
     obj.className="danger";
     $("#addButton").removeAttr("disabled");
-    $("#executeButton").attr("disabled", "disabled");
 
     if (oldObj!=null) {
         oldObj.className = "";
@@ -132,9 +131,9 @@ function reset() {
 */
 
 function execute() {
-    notify("Executing node...");
+    notify("Executing node TODO...");
     $.ajax({
-        url: '/block/execute/' + data.id,
+        url: '/block/execute/' + 'TODOOOOO',
         type: 'POST',
         dataType: "json",
         data: JSON.stringify("data"),
@@ -185,8 +184,8 @@ function load() {
         success : function(data){
             if(data.ok)
             {
-                cleanDisplay();
                 notify("Done\n");
+                notify("TODO: CLEAN + UPDATE UI\n");
             }
             else
             {
@@ -208,9 +207,7 @@ function cleanDisplay()
 }
 
 cleanDisplay();
-$("#loadButton").attr("disabled", "disabled");  //TORO remove when managed
 $("#addButton").attr("disabled", "disabled");
-$("#saveButton").removeAttr("disabled");
 $("#search").val("");
 $("#console").val("");
 fillInitTable();

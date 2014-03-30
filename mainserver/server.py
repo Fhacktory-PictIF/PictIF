@@ -141,12 +141,12 @@ def removeConnection() :
         #warning, the currentId is the one whose parent have to be suppressed.
         param = json.loads(request.data)
         parentId, currentId = param['parentId'], param['currentId']
-        current_component = componentGestioner.map_of_component.get(currentId)
-        parent_component = componentGestioner.map_of_component.get(parentId)
+        current_component = componentGestioner.map_of_component[currentId]
+        parent_component = componentGestioner.map_of_component[parentId]
         #Addcomponent to parent
+        print parentId, current_component.parent.id;
         if (current_component != None and parent_component != None) :
-            if current_component.id == parentId :
-                print "smdwonvfsodfhqsdjhf"
+            if current_component.parent.id == parentId :
                 current_component.parent = None
             resp = {'ok': True}
             return json.dumps(resp)
