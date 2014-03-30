@@ -8,6 +8,12 @@ import cv2
 
 class Cropper(Component):
 
+	attr_description = Component.attr_description + "output:O:output writer,x:int:top left point's abscisse of cropping rectangle,\
+		y:int:top left point's ordonate of cropping rectangle,width:int:width of cropping rectangle,\
+		height:int:height of cropping rectangle"
+
+	description = "Component for cropping images. It takes as input a list of images and returns the list of cropped images"
+
 	def __init__(self):
 		Component.__init__(self)
 		self.output = O()
@@ -15,7 +21,6 @@ class Cropper(Component):
 		self.y = 0
 		self.width = 100
 		self.height = 100
-		self.images = []
 
 	def process(self):
 
@@ -32,11 +37,14 @@ class Cropper(Component):
 
 class GrayScale(Component):
 
+	attr_description = Component.attr_description + "output:O:output writer,degree:int:output images darkness"
+
+	description = "Component for turning the images into gray scale. It takes as input a list of images and returns the list of gray images"
+
 	def __init__(self):
 		Component.__init__(self)
 		self.output = O()
 		self.degree = 1
-		self.images = []
 
 	def process(self):
 
@@ -85,7 +93,7 @@ class FacesDetector(Component):
 
 	def process(self):
 
-		if not self.executed and (self.parent is not None):
+		if not self.executed and self.parent is not None:
 			self.executeParent()
 
 			img = cv2.imread("../../test/people.jpg")
