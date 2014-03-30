@@ -80,9 +80,6 @@ function selectLine(obj) {
     obj.className="danger";
     $("#addButton").removeAttr("disabled");
 
-    var type = document.getElementById(oldObj.id).firstChild.innerHTML;
-    displayStaticDescription(type);
-
     if (oldObj!=null) {
         oldObj.className = "";
         oldObj = obj;
@@ -90,6 +87,9 @@ function selectLine(obj) {
     else {
         oldObj = obj;
     }
+
+    var type = document.getElementById(oldObj.id).firstChild.innerHTML;
+    displayStaticDescription(type);
 }
 
 function addBlock() {

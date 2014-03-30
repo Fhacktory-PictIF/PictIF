@@ -81,7 +81,7 @@ var onClickElement = function(obj){
 
 var displayStaticDescription = function(blockType){
   $.ajax({
-      url: '/getDescription',
+      url: '/getStaticDescription/' + blockType,
       type: 'GET',
       async: false,
       dataType: "json",

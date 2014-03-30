@@ -109,14 +109,17 @@ def addConnection() :
     resp={'ok':False}
     return json.dumps(resp)
 
-@app.route("/getStaticDescription", methods = ['GET'])
-def getStaticDescription() :
+@app.route("/getStaticDescription/<type>", methods = ['GET'])
+def getStaticDescription(type) :
     if request.method == 'GET' :
-        blockId = json.loads(request.data)
-        component = componentGestioner.map_of_component[blockId]
-        listAttr = [attr.split(":") for attr in component.attr_description.split(",") ]
-        resp={'ok':True, 'description':listAttr, 'images' : component.images, 'strDesc': component.description }
-        return json.dumps(resp)
+        subclasses = Component.__subclasses__()
+        sub = getClassName(type)
+        for subclass in subclasses:
+            if subclass.__name__ == sub:
+                #TODO CONFIGURATION READONLY
+                listAttr = []
+                resp={'ok':True, 'description':listAttr, 'strDesc': subclass.description }
+                return json.dumps(resp)
 
     resp={'ok':False}
     return json.dumps(resp)
