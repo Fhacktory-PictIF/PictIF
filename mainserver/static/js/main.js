@@ -76,9 +76,10 @@ function notify(msg)
 function selectLine(obj) {
     var idLigne=obj.id;
     obj.className="danger";
+    $("#addButton").removeAttr("disabled");
 
     if (oldObj!=null) {
-        oldObj.className = "item";
+        oldObj.className = "";
         oldObj = obj;
     }
     else {
@@ -87,21 +88,27 @@ function selectLine(obj) {
 }
 
 function addBlock() {
-    var objId;
+    if(oldObj != null) {
+        var type = document.getElementById(oldObj.id).firstChild.innerHTML;
 
-    if(objId != null) {
         $.ajax({
-            url: '/block/add/' + oldObj.id,
+            url: '/block/add/' + type,
             type: 'POST',
             dataType: "json",
             data: JSON.stringify("data"),
             success : function(data){
-                //TODO Recuperer les donnees et ajouter un bloc au canevas
+                if(data.ok)
+                {
+                    notify(type + " block added\n");
+                    addComponent(id, type)
+                }
+                else
+                {
+                    notify("Error: " + type + " block could not be added\n");
+                }
             }});
-        notify("Block TODO added\n");
     }
 }
-
 
 function reset() {
     //TODO reset un bloc selectionne sur le canevas
@@ -145,4 +152,5 @@ function save() {
     notify("Done\n");
 }
 
+$("#addButton").attr("disabled", "disabled");
 fillInitTable();

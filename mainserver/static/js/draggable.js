@@ -1,18 +1,17 @@
-  var i = 0;
 
+var i = 0;
 
 $(document).ready(function() {
 
-    var map = {};    
+    var map = {};
 
 
   var endpointStyle = {
-      isTarget:true, 
+      isTarget:true,
       maxConnections:5,
-      endpoint:"Rectangle", 
+      endpoint:"Rectangle",
       paintStyle:{ fillStyle:"gray" }
     };
-
 
     var dropOptions = { hoverClass:"hover", activeClass:"active" },
         exampleGreyEndpointOptions = {
@@ -24,8 +23,8 @@ $(document).ready(function() {
     };
 
   $('#container').dblclick(function(e) {
-        addComponent(e);
-  }); 
+        addDraggableComponent(e);
+  });
 
 });
 
@@ -46,18 +45,17 @@ var detachFunction = function(conn){
             }
 };
 
-var addComponent = function(e){
+var addDraggableComponent = function(id, type){
     var newState = $('<div>').attr('id', 'state' + i).addClass('itemDrag');
     var title = $('<div>').addClass('title').text('State ' + i);
     var connect = $('<div>').addClass('connect');
 
     newState.css({
-      'top': 20,  
+      'top': 20,
       'left': 20
     });
 
     newState.append(title);
-    
     $('#container').append(newState);
     jsPlumb.draggable($(".itemDrag"));
 
@@ -74,6 +72,6 @@ var addComponent = function(e){
     });
 
     jsPlumb.addEndpoint('state'+i,  {anchor:"TopLeft",isTarget:true});
-    
-    i++;    
+
+    i++;
 };
