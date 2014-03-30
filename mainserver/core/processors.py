@@ -63,24 +63,33 @@ class GrayScale(Component):
 
 class ChromaKey(Component):
 
+	description = "Composes all the images in input1 with the background image defined in input2"
+	attr_description = Component.attr_description + "background:ImageData:the image applied as background,parent2:component:second parent"
+
 	def __init__(self):
 		Component.__init__(self)
-		self.green_screen = ImageData("../test/greenScreen.jpg")
-		self.green_screen.load()
-		self.background = ImageData("../test/landscape.jpg")
-		self.background.load()
-		self.green_screen.image = self.green_screen.image.scale(self.background.image.width, self.background.image.height)
+		self.background
+		self.parent2 = None
+
+	def setParent2(self, parent):
+		self.parent2 = parent
+		if parent is None :
+			self.executed = False
+
+	def delParent2(self):
+		self.parent2 = None
+		self.executed = False
 
 	def process(self):
 
-		if not self.executed and (self.parent is not None):
+		if not self.executed and self.parent is not None:
 			self.executeParent()
 
-			mask = self.green_screen.image.hueDistance(color=Color.GREEN).binarize()
-			
-			result = (self.green_screen.image - mask) + (self.background.image - mask.invert())
-			result.show()
-			time.sleep(10)
+			for i in self.images:
+				background = self.background.image.scale(i.image.width, i.image.height)
+				mask = background.hueDistance(color=Color.GREEN).binarize()
+				
+				result = (background - mask) + (background - mask.invert())
 
 class FacesDetector(Component):
 
