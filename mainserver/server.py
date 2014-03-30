@@ -63,7 +63,7 @@ def getBlockFromType(blockType):
     for subclass in subclasses:
         if subclass.__name__ == sub:
             comp = subclass()
-            componentGestioner.map_of_component[comp.id] = comp
+            componentGestioner.map_of_component[str(comp.id)] = comp
             resp = {'ok': True, 'id': comp.id}
             return json.dumps(resp)
 
@@ -95,8 +95,8 @@ def addConnection() :
     if request.method == 'POST' :
         param = json.loads(request.data)
         parentId, currentId = param['parentId'], param['currentId']
-        current_component = componentGestioner.map_of_component.get(currentId)
-        parent_component = componentGestioner.map_of_component.get(parentId)
+        current_component = componentGestioner.map_of_component[currentId]
+        parent_component = componentGestioner.map_of_component[parentId]
         #Addcomponent to parent
         if (current_component != None and parent_component != None and current_component.parent == None) :
             componentGestioner.map_of_component[currentId].parent = componentGestioner.map_of_component[parentId]
@@ -109,11 +109,23 @@ def addConnection() :
     resp={'ok':False}
     return json.dumps(resp)
 
+@app.route("/getDescription", methods = ['POST'])
+def getDescription() :
+    if request.method == 'POST' :
+        blockId = json.loads(request.data)
+        component = componentGestioner.map_of_component[blockId]
+        listAttr = [attr.split(":") for attr in component.attr_description.split(",") ]
+        resp={'ok':True, 'description':listAttr, 'images' : component.images, 'strDesc': component.description }
+        return json.dumps(resp)
+
+    resp={'ok':False}
+    return json.dumps(resp)
+
+
 @app.route("/block/removeConnection", methods = ['POST'])
 def removeConnection() :
     if request.method == 'POST' :
         #warning, the currentId is the one whose parent have to be suppressed.
-        print request.data
         param = json.loads(request.data)
         parentId, currentId = param['parentId'], param['currentId']
         current_component = componentGestioner.map_of_component.get(currentId)
@@ -121,6 +133,7 @@ def removeConnection() :
         #Addcomponent to parent
         if (current_component != None and parent_component != None) :
             if current_component.id == parentId :
+                print "smdwonvfsodfhqsdjhf"
                 current_component.parent = None
             resp = {'ok': True}
             return json.dumps(resp)

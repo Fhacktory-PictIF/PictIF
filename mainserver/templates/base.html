@@ -15,24 +15,25 @@
 
 </head>
 
-<body style="background-color:#F0F0F0; margin:20px">
-    <div id="notification-bar"></div>
+<body style="background-color:#F0F0F0;">
+    <div style="background-color:#F0F0F0; margin:20px;">
+        <div id="notification-bar"></div>
 
-    {% block body %}
-    {% endblock %}
+        {% block body %}
+        {% endblock %}
 
-    <!-- JS files, placed at the end for faster page loading -->
-    <script src="/static/js/jquery-1.10.2.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
-    <script src="/static/js/jquery.form.min.js"></script>
-    <script src="/static/js/bootstrap-select.js"></script>
+        <!-- JS files, placed at the end for faster page loading -->
+        <script src="/static/js/jquery-1.10.2.js"></script>
+        <script src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.form.min.js"></script>
+        <script src="/static/js/bootstrap-select.js"></script>
 
-    <script src="/static/js/handlebars-v1.3.0.js"></script>
+        <script src="/static/js/handlebars-v1.3.0.js"></script>
 
-    <script src="static/js/header.js"></script>
-    {% block javascript %}
-    {% endblock %}
-
+        <script src="static/js/header.js"></script>
+        {% block javascript %}
+        {% endblock %}
+    </div>
 </body>
 
 </html>
