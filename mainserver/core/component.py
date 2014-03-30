@@ -8,7 +8,7 @@ from operator import add
 import cv2
 
 nbComponents = 0
-dir_tmp = "test/treated/cam/"
+dir_tmp = "static/test/treated/cam/"
 
 def generateId():
     global nbComponents
@@ -194,7 +194,7 @@ class ImageStack(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.directory = "./test/treated/cam/"
+        self.directory = "./static/test/treated/cam/"
         self.intensity = 5
 
     def process(self):
@@ -370,7 +370,7 @@ class Recognizer(Component):
             self.executeParent()
 
             #positives
-            f = open('../test/positives.dat', 'w')
+            f = open('../static/test/positives.dat', 'w')
             for i in self.parent.images:
                 i.load()
                 f.write(i.path + " 1 0 0 " + str(i.image.width) + " " + str(i.image.height) + "\n")
@@ -379,7 +379,7 @@ class Recognizer(Component):
             f.close()
 
             #negatives
-            f = open('../test/negatives.dat', 'w')
+            f = open('../static/test/negatives.dat', 'w')
             for i in self.parent2.images:
                 i.load()
                 f.write(i.path + "\n")
@@ -387,8 +387,8 @@ class Recognizer(Component):
             nb_negatives = len(self.parent2.images)
             f.close()
 
-            os.system("opencv_createsamples -info ../test/positives.dat -vec ../test/positives.vec -num "+ str(nb_positives) +" -w 48 -h 48")
-            os.system("opencv_traincascade -data ../../XML/ -vec ../test/positives.vec -w 48 -h 48 -bg ../test/negatives.dat -numPos "+ str(nb_positives) + " -numNeg "+ str(nb_negatives))
+            os.system("opencv_createsamples -info ../static/test/positives.dat -vec ../static/test/positives.vec -num "+ str(nb_positives) +" -w 48 -h 48")
+            os.system("opencv_traincascade -data ../../XML/ -vec ../static/test/positives.vec -w 48 -h 48 -bg ../static/test/negatives.dat -numPos "+ str(nb_positives) + " -numNeg "+ str(nb_negatives))
 
             cascade = cv2.CascadeClassifier('../../XML/haarcascade_frontalface_default.xml')
 
@@ -436,7 +436,7 @@ class Reader(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.pathes = ["./test"]
+        self.pathes = ["./static/test"]
         self.length = None
         self.key_points = []
         self.mean_colors = []

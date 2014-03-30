@@ -131,6 +131,12 @@ def getStaticDescription(type) :
     resp={'ok':False}
     return json.dumps(resp)
 
+def getFilePathsFromImages(images):
+    paths = []
+    for img in images:
+        paths.append(img.path)
+    return paths
+
 @app.route("/getDescription/<objId>", methods = ['GET'])
 def getDescription(objId) :
     if request.method == 'GET' :
@@ -138,7 +144,8 @@ def getDescription(objId) :
         #listAttr = json.dumps(component.__dict__)
         #resp={'ok':True,"class": component.__class__.__name__, 'id':objId, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
         listAttr = []
-        resp={'ok':True,"class": component.__class__.__name__, 'id':objId, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
+        print getFilePathsFromImages(component.images)
+        resp={'ok':True,"class": component.__class__.__name__, 'id':objId, 'attrs':listAttr, 'images' : getFilePathsFromImages(component.images), 'strDesc': component.description}
         return json.dumps(resp)
 
     resp={'ok':False}
