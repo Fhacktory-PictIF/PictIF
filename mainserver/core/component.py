@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time, os
+import time, os, tempfile
 from SimpleCV import Image, Color
 import cv2
 
 nbComponents = 0
+dir_tmp = "../test/treated/"
 
 def generateId():
     global nbComponents
@@ -15,6 +16,7 @@ def generateId():
 class Component(object):
     ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
+    dir_tmp = tempfile.gettempdir()
     selectors = dict(FileFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
     statistics = []
     #classmere.__subclasses__() return list
@@ -98,10 +100,7 @@ class FileFilter(Component):
         if not self.executed and self.parent is not None:
             self.executeParent()
 
-            if self.images is None:
-                self.images = []
-
-            tempI = set(self.images + self.parent.images)
+            tempI = set(self.parent.images)
             tempO = set()
             if self.time_reference is not None:
                 for image in tempI:
@@ -153,7 +152,9 @@ class O():
     @classmethod
     def write(cls, images, path, ComponentId):
         for image in images:
-            image.image.save(path + image.name + str(ComponentId) + image.extension)
+            image.path = path + image.name + str(ComponentId) + image.extension
+            image.image.save(image.path)
+            image.date = time.ctime(os.path.getctime(image.path))
 
 class ImageData():
     """Image object"""
@@ -163,7 +164,6 @@ class ImageData():
         self.name = os.path.splitext(os.path.basename(path))[0]
         self.extension = os.path.splitext(path)[1]
         self.image = None
-        self.suffixes = ""
 
     def load(self):
         self.image = Image(self.path)
@@ -199,9 +199,9 @@ class Cropper(Component):
             for im in self.images:
                 im.image = im.image.crop(self.x,self.y,self.width,self.height)
 
-            self.output.write(self.images,'../../test/cropped/',self.id)
+            self.output.write(self.images,dir_tmp,self.id)
 
-            O.write(self.images, "path", self.id)
+            O.write(self.images, dir_tmp, self.id)
             for image in self.images:
                 image.unload()
 
@@ -231,14 +231,15 @@ class GrayScale(Component):
                 im.image = (red.toGray() + green.toGray() + blue.toGray()) / self.degree
 
             self.executed = True
-            O.write(self.images,"path",self.id)
+
+            O.write(self.images,dir_tmp,self.id)
             for image in self.images:
                 image.unload()
 
 class ChromaKey(Component):
 
     description = "Composes all the images in input1 with the background image defined in input2"
-    attr_description = Component.attr_description + "background:ImageData:the image applied as background,parent2:component:second parent"
+    attr_description = Component.attr_description + "output:O:output writer,background:ImageData:the image applied as background,parent2:component:second parent"
 
     def __init__(self):
         Component.__init__(self)
@@ -272,46 +273,73 @@ class ChromaKey(Component):
                 i.image = (background - mask) + (background - mask.invert())
 
             self.executed = True
-            O.write(self.images,"path",self.id)
+            O.write(self.images,dir_tmp,self.id)
             for image in self.images:
                 image.unload()
 
 
 class FacesDetector(Component):
+    cascade = cv2.CascadeClassifier('../../XML/haarcascade_frontalface_default.xml')
 
     def __init__(self):
         Component.__init__(self)
-        self.image = ImageData("../../test/people.jpg")
-        self.cascade = cv2.CascadeClassifier('../../XML/haarcascade_frontalface_default.xml')
-        self.output = O()
 
     def process(self):
 
         if not self.executed and self.parent is not None:
             self.executeParent()
-            
-            self.image.load()
 
-            img = cv2.imread("../../test/people.jpg")
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            ret,thresh = cv2.threshold(gray,127,255,0)
-            faces = self.cascade.detectMultiScale(gray, 1.3, 5)
-            contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-            for (x,y,w,h) in faces:
-                cv2.ellipse(img, (x + w / 2,y + h / 2),(w / 2,h / 2), 0, 0, 360,(255,0,0),2)
-                #for c,k in zip(contours,range(len(contours))):
-                #   if cv2.pointPolygonTest(c,(x,y),False) > -1:
-                #       cv2.drawContours(img, contours, k, (0,255,0), 3)
+            self.images = self.parent.images
+            for i in self.images:
+                img = cv2.imread(i.path)
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                ret,thresh = cv2.threshold(gray,127,255,0)
+                faces = FacesDetector.cascade.detectMultiScale(gray, 1.3, 5)
+                #contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+                for (x,y,w,h),k in zip(faces,range(len(faces))):
+                    #cv2.ellipse(img, (x + w / 2,y + h / 2),(w / 2,h / 2), 0, 0, 360,(255,0,0),2)
+                    o = img[y: y + h, x: x + w]
+                    cv2.imwrite(dir_tmp + i.name + str(self.id) + str(k) + '.jpg', o)
+                    #for c,k in zip(contours,range(len(contours))):
+                    #   if cv2.pointPolygonTest(c,(x,y),False) > -1:
+                    #       cv2.drawContours(img, contours, k, (0,255,0), 3)
 
+                #cv2.imshow('img',img)
+                #cv2.waitKey(0)
+                #cv2.destroyAllWindows()
 
-            cv2.imshow('img',img)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
+class Recognizer(Component):
 
-            O.write([self.image],"path",self.id)
-            self.image.unload()
+    def __init__(self):
+        Component.__init__(self)
+        self.patterns = []
+        self.parent2 = None
 
+    def setParent2(self, parent):
+        self.parent2 = parent
+        if parent is None :
+            self.executed = False
 
+    def delParent2(self):
+        self.parent2 = None
+        self.executed = False
+
+    def process(self):
+
+        if not self.executed and self.parent is not None:
+            self.executeParent()
+
+            self.images = self.parent.images
+
+            self.patterns = self.parent2.images
+
+            #f = open('../test/positives.dat', 'w')
+            for i in self.images:
+                print dir_tmp + i.name + str(self.parent.id) + i.extension
+
+            #retvalue = os.system("ps -p 2993 -o time --no-headers")
+
+            #O.write(self.images,dir_tmp,self.id)
 
 class Reader(Component):
     attr_description = Component.attr_description + "pathes:list(string):lists of file or folder pathes,\
@@ -338,7 +366,7 @@ class Reader(Component):
         # self.key_points = [i.image.findKeypoints() for i in self.images]
         self.mean_colors = [k.meanColor() for k in self.key_points]
         
-        O.write(self.images,"path",self.id)
+        O.write(self.images,dir_tmp,self.id)
         for image in self.images:
             image.unload()
         self.executed = True
@@ -370,7 +398,7 @@ class Writer(Component):
         self.path = "" #TODO
 
     def process(self):
-        O.write(self.images, self.path, "")
+        O.write(self.images, self.path, "Lol")
         self.executed = True
 
 if __name__ == "__main__" :
