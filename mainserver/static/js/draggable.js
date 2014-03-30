@@ -22,8 +22,6 @@ $(document).ready(function() {
         connectorStyle : { strokeStyle:"#666" },
         isTarget:true
     };
-
-
 });
 
 var detachFunction = function(conn){
@@ -56,7 +54,7 @@ var dropFunction = function(params){
 var onClickElement = function(obj){
   $.ajax({
       url: '/getDescription',
-      type: 'POST',
+      type: 'GET',
       async: false,
       dataType: "json",
       data: JSON.stringify(obj.getAttribute('id')),
@@ -79,7 +77,24 @@ var onClickElement = function(obj){
         {
           $("#renderPic").attr('src', data.images[0]);
         }
+  }});
+}
 
+var getStaticDescription = function(blockType){
+  $.ajax({
+      url: '/getDescription',
+      type: 'GET',
+      async: false,
+      dataType: "json",
+      data: JSON.stringify(blockType),
+      contentType: 'application/json;charset=UTF-8',
+      success : function(data){
+        $("#nextButton").attr("disabled", "disabled");
+        $("#previousButton").attr("disabled", "disabled");
+        $("#description").val(data.strDesc);
+        $("#renderPic").attr('src', data.images[0]);
+
+        //TODO add configuration (readonly mode)
         for (i=0; i<data.description.lenght; i++)
           switch (data.description[i][2])
           {

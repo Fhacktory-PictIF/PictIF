@@ -109,9 +109,9 @@ def addConnection() :
     resp={'ok':False}
     return json.dumps(resp)
 
-@app.route("/getDescription", methods = ['POST'])
-def getDescription() :
-    if request.method == 'POST' :
+@app.route("/getStaticDescription", methods = ['GET'])
+def getStaticDescription() :
+    if request.method == 'GET' :
         blockId = json.loads(request.data)
         component = componentGestioner.map_of_component[blockId]
         listAttr = [attr.split(":") for attr in component.attr_description.split(",") ]
@@ -121,6 +121,17 @@ def getDescription() :
     resp={'ok':False}
     return json.dumps(resp)
 
+@app.route("/getDescription", methods = ['GET'])
+def getDescription() :
+    if request.method == 'GET' :
+        blockId = json.loads(request.data)
+        component = componentGestioner.map_of_component[blockId]
+        listAttr = ["TODO"]
+        resp={'ok':True, 'attrs':listAttr, 'images' : component.images}
+        return json.dumps(resp)
+
+    resp={'ok':False}
+    return json.dumps(resp)
 
 @app.route("/block/removeConnection", methods = ['POST'])
 def removeConnection() :

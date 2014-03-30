@@ -193,12 +193,18 @@ function load() {
     $("#loadButton").removeAttr("disabled");
 }
 
+function cleanDisplay()
+{
+    $("#nextButton").attr("disabled", "disabled");
+    $("#previousButton").attr("disabled", "disabled");
+    $("#description").val("");
+    $("#configuration").innerHTML = "";
+    $("#renderPic").attr('src', "../static/img/upload_b.png");
+    currentPicIdx = 0;
+}
+
+cleanDisplay();
 $("#addButton").attr("disabled", "disabled");
-$("#nextButton").attr("disabled", "disabled");
-$("#previousButton").attr("disabled", "disabled");
 $("#search").val("");
 $("#console").val("");
-$("#description").val("");
-$("#configuration").innerHTML = "";
-$("#renderPic").attr('src', "../static/img/upload_b.png");
 fillInitTable();
