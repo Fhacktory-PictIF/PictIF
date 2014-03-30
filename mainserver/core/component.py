@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import time, os
-from SimpleCV import Image
-from SimpleCV import Color
+import time, os, tempfile
+from SimpleCV import Image, Color
 import cv2
 
 nbComponents = 0
@@ -14,10 +13,11 @@ def generateId():
     nbComponents += 1
     return nbComponents
 
-class Component():
+class Component(object):
     ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
-    selectors = dict(RowFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
+    dir_tmp = tempfile.gettempdir()
+    selectors = dict(FileFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
     statistics = []
     #classmere.__subclasses__() return list
 
@@ -60,14 +60,16 @@ class Splitter(Component):
         self.images2 = None
 
     def process(self):
-        self.images = []
-        self.images2 = []
+        if not self.executed and self.parent is not None:
+            self.executeParent()
+            self.images = []
+            self.images2 = []
 
-        for image in self.parent.images:
-            # TODO define split criteria
-            pass
+            for image in self.parent.images:
+                # TODO define split criteria
+                pass
 
-        self.executed = True
+            self.executed = True
 
 
 class FileFilter(Component):
@@ -95,27 +97,31 @@ class FileFilter(Component):
         self.extensions = extensions
 
     def process(self):
-        if self.images is None:
-            self.images = []
-        tempI = set(self.images + self.parent.images)
-        tempO = set()
-        if self.time_reference is not None:
-            for image in tempI:
-                if self.time_relative == 1:
-                    if self.time_reference < image.date:
-                        tempO.add(image)
-                elif self.time_relative == -1:
-                    if self.time_reference > image.date:
-                        tempO.add(image)
-                elif self.time_relative == 0:
-                    if self.time_reference == image.date:
-                        tempO.add(image)
-        elif self.extensions is not None:
-            if not self.extension_keep:
-                tempO = tempO.union(set([im for im in self.parent.images if im.extension in self.extensions]))
-            else:
-                tempO = tempO.union(set([im for im in self.parent.images if im.extension not in self.extensions]))
-        self.images = list(tempO)
+        if not self.executed and self.parent is not None:
+            self.executeParent()
+
+            if self.images is None:
+                self.images = []
+
+            tempI = set(self.images + self.parent.images)
+            tempO = set()
+            if self.time_reference is not None:
+                for image in tempI:
+                    if self.time_relative == 1:
+                        if self.time_reference < image.date:
+                            tempO.add(image)
+                    elif self.time_relative == -1:
+                        if self.time_reference > image.date:
+                            tempO.add(image)
+                    elif self.time_relative == 0:
+                        if self.time_reference == image.date:
+                            tempO.add(image)
+            elif self.extensions is not None:
+                if not self.extension_keep:
+                    tempO = tempO.union(set([im for im in self.parent.images if im.extension in self.extensions]))
+                else:
+                    tempO = tempO.union(set([im for im in self.parent.images if im.extension not in self.extensions]))
+            self.images = list(tempO)
 
 class Joiner(Component):
     """Joins two streams into one"""
@@ -136,15 +142,18 @@ class Joiner(Component):
         self.executed = False
 
     def process(self):
-        self.images = list(set(self.parent.images + self.parent2.images))
-        self.executed = True
+        if not self.executed and self.parent is not None:
+            self.executeParent()
+            self.images = list(set(self.parent.images + self.parent2.images))
+            self.executed = True
 
 class O():
     """Output mechanism"""
     def __init__(self):
         pass
 
-    def write(self, images, path, ComponentId):
+    @classmethod
+    def write(cls, images, path, ComponentId):
         for image in images:
             image.image.save(path + image.name + str(ComponentId) + image.extension)
 
@@ -185,10 +194,17 @@ class Cropper(Component):
             self.executeParent()
 
             self.images = self.parent.images
+            for image in self.images:
+                image.load()
+
             for im in self.images:
                 im.image = im.image.crop(self.x,self.y,self.width,self.height)
 
             self.output.write(self.images,dir_tmp,self.id)
+
+            O.write(self.images, dir_tmp, self.id)
+            for image in self.images:
+                image.unload()
 
             self.executed = True
 
@@ -200,7 +216,6 @@ class GrayScale(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.output = O()
         self.degree = 1
 
     def process(self):
@@ -209,6 +224,8 @@ class GrayScale(Component):
             self.executeParent()
 
             self.images = self.parent.images
+            for image in self.images:
+                image.load()
 
             for im in self.images:
                 (red, green, blue) = im.image.splitChannels(False)
@@ -216,7 +233,9 @@ class GrayScale(Component):
 
             self.executed = True
 
-            self.output.write(self.images,dir_tmp,self.id)
+            O.write(self.images,dir_tmp,self.id)
+            for image in self.images:
+                image.unload()
 
 class ChromaKey(Component):
 
@@ -245,6 +264,8 @@ class ChromaKey(Component):
 
             self.images = self.parent.images
             self.background = self.parent2.images[0]
+            for image in self.images:
+                image.load()
 
             for i in self.images:
                 background = self.background.image.scale(i.image.width, i.image.height)
@@ -253,7 +274,10 @@ class ChromaKey(Component):
                 i.image = (background - mask) + (background - mask.invert())
 
             self.executed = True
-            self.output.write(self.images,dir_tmp,self.id)
+            O.write(self.images,dir_tmp,self.id)
+            for image in self.images:
+                image.unload()
+
 
 class FacesDetector(Component):
     cascade = cv2.CascadeClassifier('../../XML/haarcascade_frontalface_default.xml')
@@ -291,7 +315,6 @@ class Recognizer(Component):
         Component.__init__(self)
         self.patterns = []
         self.parent2 = None
-        self.output = O()
 
     def setParent2(self, parent):
         self.parent2 = parent
@@ -308,6 +331,7 @@ class Recognizer(Component):
             self.executeParent()
 
             self.images = self.parent.images
+
             self.patterns = self.parent2.images
 
             #f = open('../test/positives.dat', 'w')
@@ -315,6 +339,9 @@ class Recognizer(Component):
                 print dir_tmp + i.name + str(self.parent.id) + i.extension
 
             #retvalue = os.system("ps -p 2993 -o time --no-headers")
+
+            #O.write(self.images,dir_tmp,self.id)
+
 
 
 class Reader(Component):
@@ -341,6 +368,10 @@ class Reader(Component):
             # time.sleep(1)
         # self.key_points = [i.image.findKeypoints() for i in self.images]
         self.mean_colors = [k.meanColor() for k in self.key_points]
+        
+        O.write(self.images,dir_tmp,self.id)
+        for image in self.images:
+            image.unload()
         self.executed = True
 
     def read(self, pathes):
@@ -370,7 +401,7 @@ class Writer(Component):
         self.path = "" #TODO
 
     def process(self):
-        O.write(self.images, self.path, "")
+        O.write(self.images, self.path, "Lol")
         self.executed = True
 
 if __name__ == "__main__" :

@@ -76,9 +76,10 @@ function notify(msg)
 function selectLine(obj) {
     var idLigne=obj.id;
     obj.className="danger";
+    $("#addButton").removeAttr("disabled");
 
     if (oldObj!=null) {
-        oldObj.className = "item";
+        oldObj.className = "";
         oldObj = obj;
     }
     else {
@@ -87,22 +88,29 @@ function selectLine(obj) {
 }
 
 function addBlock() {
-    var objId;
+    if(oldObj != null) {
+        var type = document.getElementById(oldObj.id).firstChild.innerHTML;
 
-    if(objId != null) {
         $.ajax({
-            url: '/block/add/' + oldObj.id,
+            url: '/block/add/' + type,
             type: 'POST',
             dataType: "json",
             data: JSON.stringify("data"),
             success : function(data){
-                //TODO Recuperer les donnees et ajouter un bloc au canevas
+                if(data.ok)
+                {
+                    notify(type + " block added\n");
+                    addComponent(id, type)
+                }
+                else
+                {
+                    notify("Error: " + type + " block could not be added\n");
+                }
             }});
-        notify("Block TODO added\n");
     }
 }
 
-
+/*
 function reset() {
     //TODO reset un bloc selectionne sur le canevas
     $.ajax({
@@ -115,10 +123,10 @@ function reset() {
         }});
     notify("Node reset: TODO ID\n");
 }
+*/
 
 function execute() {
     notify("Executing node TODO...");
-    //TODO execute un bloc selectionne sur le canevas
     $.ajax({
         url: '/block/execute/' + 'TODOOOOO',
         type: 'POST',
@@ -131,18 +139,53 @@ function execute() {
 }
 
 function save() {
-    notify("Saving work flow...");
+    $("#saveButton").click(function () {
+        $("#saveInput").trigger('click');
+    });
+
+    $("#saveButton").attr("disabled", "disabled");
+    notify("Saving work flow to " + filePath + "...");
     //Save everything
     $.ajax({
-        url: '/save',
+        url: '/save/' + filePath,
         type: 'POST',
         dataType: "json",
         data: JSON.stringify("data"),
         success : function(data){
-
+            if(data.ok)
+            {
+                notify("Done\n");
+            }
+            else
+            {
+                notify("\nError: workflow could not be saved\n");
+            }
+            $("#saveButton").removeAttr("disabled");
         }});
-
-    notify("Done\n");
 }
 
+function load(filePath) {
+    $("#loadButton").attr("disabled", "disabled");
+    notify("Loading work flow from " + filePath + "...");
+    //Save everything
+    $.ajax({
+        url: '/load/' + filePath,
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+            if(data.ok)
+            {
+                notify("Done\n");
+                notify("TODO: CLEAN + UPDATE UI\n");
+            }
+            else
+            {
+                notify("\nError: workflow could not be loaded\n");
+            }
+            $("#loadButton").removeAttr("disabled");
+        }});
+}
+
+$("#addButton").attr("disabled", "disabled");
 fillInitTable();
