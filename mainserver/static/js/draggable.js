@@ -1,5 +1,4 @@
 
-var i = 0;
 
 $(document).ready(function() {
 
@@ -22,32 +21,82 @@ $(document).ready(function() {
         isTarget:true
     };
 
-  $('#container').dblclick(function(e) {
-        addDraggableComponent(e);
-  });
 
 });
 
 var detachFunction = function(conn){
-    var result = confirm("confirm detach ?");
-            alert(JSON.stringify({'currentId':JSON.stringify(conn.targetId), 'parentId':JSON.stringify(conn.sourceId)}));
-            if ( result == true ) {
+    var resultConf = confirm("confirm detach ?");
+    var result = false;
+            if ( resultConf == true ) {
                 $.ajax({
                     url: '/block/removeConnection',
                     type: 'POST',
-                    async: true,
+                    async: false,
                     dataType: "json",
                     data: JSON.stringify({"currentId": conn.targetId, "parentId":conn.sourceId}),
                     contentType: 'application/json;charset=UTF-8',
                     success : function(data){
+                        result = data.ok;
                         //TODO Recuperer les donnees et ajouter un bloc au canevas
                     }});
+                return result;
+            }
+            else {
+                return result;
             }
 };
 
+var dropFunction = function(params){
+    var resultConf = confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
+    var result = false;
+    if ( resultConf == true ) {
+                $.ajax({
+                    url: '/block/addConnection',
+                    type: 'POST',
+                    async: false,
+                    dataType: "json",
+                    data: JSON.stringify({"currentId":  params.targetId , "parentId":params.sourceId }),
+                    contentType: 'application/json;charset=UTF-8',
+                    success : function(data){
+                        result = Boolean(data.ok);
+                        //TODO Recuperer les donnees et ajouter un bloc au canevas
+                    }});
+                return result;
+            }
+    else {
+        return result ;
+    }
+}
+
+var onClickElement = function(obj){
+    $.ajax({
+        url: '/getDescription',
+        type: 'POST',
+        async: false,
+        dataType: "json",
+        data: JSON.stringify(obj.getAttribute('id')),
+        contentType: 'application/json;charset=UTF-8',
+        success : function(data){
+            for (i=0; i<data.lenght; i++)
+            switch (data[i][2])
+        {
+            case "int":
+
+
+            case "string":
+
+
+            case ""
+        }
+    }});
+
+}
+
+
+
 var addDraggableComponent = function(id, type){
-    var newState = $('<div>').attr('id', 'state' + i).addClass('itemDrag');
-    var title = $('<div>').addClass('title').text('State ' + i);
+    var newState = $('<div>').attr('id', String(id)).attr('onclick',"javascript: onClickElement(this)").addClass('itemDrag');
+    var title = $('<div>').addClass('title').text(type);
     var connect = $('<div>').addClass('connect');
 
     newState.css({
@@ -59,19 +108,18 @@ var addDraggableComponent = function(id, type){
     $('#container').append(newState);
     jsPlumb.draggable($(".itemDrag"));
 
-    jsPlumb.addEndpoint('state'+i, {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+    jsPlumb.addEndpoint(String(id), {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
         beforeDetach: function(conn) {
-            detachFunction(conn);
+            return detachFunction(conn);
         }});
-    jsPlumb.addEndpoint('state'+i,  {
+    jsPlumb.addEndpoint(String(id),  {
         anchor:"BottomLeft",
         isTarget:true,
         beforeDrop: function(params) {
-            return confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
+            return dropFunction(params);
         }
     });
 
-    jsPlumb.addEndpoint('state'+i,  {anchor:"TopLeft",isTarget:true});
+    jsPlumb.addEndpoint(String(id),  {anchor:"TopLeft",isTarget:true});
 
-    i++;
 };

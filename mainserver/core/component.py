@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import time, os
+from SimpleCV import Image
+from SimpleCV import Color
+import cv2
+
 nbComponents = 0
 
 def generateId():
@@ -30,7 +35,7 @@ class Component(object):
     		self.executed = False
 
     def isSafelyExecuted(self):
-    	return False if (self.parent is None) else True if isinstance(self.parent, RW.Reader) and self.parent.executed and self.executed else self.parent.isSafelyExecuted() and self.executed
+    	return False if (self.parent is None) else True if isinstance(self.parent, Reader) and self.parent.executed and self.executed else self.parent.isSafelyExecuted() and self.executed
 
     def executeParent(self):
     	if not self.parent.executed:
@@ -50,7 +55,7 @@ class Splitter(Component):
 
     def __init__(self):
         Component.__init__(self)
-        criteria = None
+        self.criteria = None
         self.images2 = None
 
     def process(self):
@@ -220,8 +225,9 @@ class ChromaKey(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.background
+        self.background = None
         self.parent2 = None
+        self.output = O()
 
     def setParent2(self, parent):
         self.parent2 = parent
@@ -237,11 +243,17 @@ class ChromaKey(Component):
         if not self.executed and self.parent is not None:
             self.executeParent()
 
+            self.images = self.parent.images
+            self.background = self.parent2.images[0]
+
             for i in self.images:
                 background = self.background.image.scale(i.image.width, i.image.height)
                 mask = background.hueDistance(color=Color.GREEN).binarize()
 
-                result = (background - mask) + (background - mask.invert())
+                i.image = (background - mask) + (background - mask.invert())
+
+            self.executed = True
+            self.output.write(self.images,'../../test/composed/',self.id)
 
 class FacesDetector(Component):
 
