@@ -18,13 +18,14 @@ class Component():
     statistics = []
     #classmere.__subclasses__() return list
 
+    attr_description = "parent:Component:previous component which this object is related to,\
+    id:int:component identifiant,images:list:images' list,executed:bool:flag for knowing if the component has to be executed or not"
 
     def __init__(self) :
     	self.parent = None
     	self.id = generateId()
-    	self.images = None
+    	self.images = []
     	self.executed = False
-        self.description = ""
 
     def setParent(self,parent):
     	self.parent = parent
