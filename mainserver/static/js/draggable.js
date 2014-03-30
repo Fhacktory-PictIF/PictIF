@@ -72,7 +72,6 @@ var onClickElement = function(obj){
           $("#nextButton").removeAttr("disabled");
         }
 
-        $("#description").val(data.strDesc);
         if(data.images.length != 0)
         {
           $("#renderPic").attr('src', data.images[0]);
@@ -80,7 +79,7 @@ var onClickElement = function(obj){
   }});
 }
 
-var getStaticDescription = function(blockType){
+var displayStaticDescription = function(blockType){
   $.ajax({
       url: '/getDescription',
       type: 'GET',
@@ -91,8 +90,9 @@ var getStaticDescription = function(blockType){
       success : function(data){
         $("#nextButton").attr("disabled", "disabled");
         $("#previousButton").attr("disabled", "disabled");
+
         $("#description").val(data.strDesc);
-        $("#renderPic").attr('src', data.images[0]);
+        $("#renderPic").attr('src', "../static/img/upload_b.png");
 
         //TODO add configuration (readonly mode)
         for (i=0; i<data.description.lenght; i++)
