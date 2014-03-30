@@ -89,8 +89,10 @@ class FacesDetector(Component):
 		faces = self.cascade.detectMultiScale(gray, 1.3, 5)
 		contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 		for (x,y,w,h) in faces:
-		    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
-		cv2.drawContours(img, contours, -1, (0,255,0), 3)
+			cv2.ellipse(img, (x + w / 2,y + h / 2),(w / 2,h / 2), 0, 0, 360,(255,0,0),2)
+			#for c,k in zip(contours,range(len(contours))):
+			#	if cv2.pointPolygonTest(c,(x,y),False) > -1:
+			#		cv2.drawContours(img, contours, k, (0,255,0), 3)
 		
 
 		cv2.imshow('img',img)
