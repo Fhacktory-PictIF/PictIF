@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import time, os, tempfile
-from SimpleCV import Image, Color, Camera
+# from SimpleCV import Image, Color, Camera, ImageSet
+from SimpleCV import *
+from operator import add
 import cv2
 
 nbComponents = 0
@@ -15,7 +17,7 @@ def generateId():
 
 class Component(object):
     ioComponents = dict(CamReader="Camera stream Reader", Reader='Picture Reader', Writer='Picture Writer')
-    processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
+    processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey',ImageStack='Image Bluhrer')
     dir_tmp = tempfile.gettempdir()
     selectors = dict(FileFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
     statistics = []
@@ -170,6 +172,37 @@ class ImageData():
 
     def unload(self):
         del self.image
+
+class ImageStack(Component):
+    """Stacks images"""
+    description = "Stacks several images for bluhring."
+    attr_description = Component.attr_description + "directory:string:path for the made up pics\
+            ,intensity:int:number of images you want to merge"
+
+    def __init__(self):
+        Component.__init__(self)
+        self.directory = ""
+        self.intensity = 5
+
+    def process(self):
+        frames = ImageSet()
+        images = self.parent.images
+        l=0
+        for im in images:
+            print "Considering " + im.path
+            im.load()
+            frames.append(im.image)
+            if len(frames) > self.intensity:
+                frames.pop(0)
+            pic = reduce(add, [i / float(len(frames)) for i in frames])
+            pic.show()
+            pth = dir_tmp + "bluhr" + str(l) +".jpeg"
+            l += 1 
+            if (l< len(images)-self.intensity/4):
+                pic.save(pth)
+                imageD = ImageData(pth)
+                self.images.append(imageD)
+        
 
 class Cropper(Component):
 
@@ -358,7 +391,7 @@ class CamReader(Component):
         self.images = []
         cam = Camera()
         for i in xrange (0,2*self.duration-1):
-            pth = dir_tmp + "cam" + str(i) + ".jpeg"
+            pth = dir_tmp + "cam/cam" + str(i) + ".jpeg"
             image = cam.getImage()
             image.save(pth)
             imageD = ImageData(pth)
