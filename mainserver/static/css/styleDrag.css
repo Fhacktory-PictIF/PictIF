@@ -1,0 +1,50 @@
+
+.boite {
+  left: 100px;
+  top: 100px;
+  width: 50px;
+  height: 50px;
+  background-color: yellow;
+  position:absolute;
+}
+.itemDrag {
+  left: 50%;
+  top: 50%;
+  width: 70px;
+  height: 70px;
+  border-radius: 20%;
+  background-color: #D1D1D1 ;
+  text-align: center;
+  vertical-align: middle;
+  position:absolute;
+}
+
+#container3 {
+  left: 100px;
+  top: 100px;
+  width: 50px;
+  height: 50px;
+  position:absolute;
+}
+
+ #container {
+        border: 1px solid gray;
+        width: 100%;
+        height: 100%;
+        position: relative;
+  }
+
+  .connect {
+  width: 50%;
+  height: 20px;
+  background-color: red;
+  cursor: pointer;
+   position:absolute;
+} 
+  .receive {
+  width: 50%;
+  height: 20px;
+  background-color: green;
+  cursor: pointer;
+   position:absolute;
+} 
