@@ -47,7 +47,7 @@ def getBlocksList():
 
 @app.route("/block/execute/<blockId>", methods = ['POST'])
 def executeBlock(blockId):
-    componentGestioner.map_of_component[blockId].execute()
+    componentGestioner.map_of_component[blockId].process()
     resp = dict(ok=True)
     return json.dumps(resp)
 

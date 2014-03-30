@@ -61,6 +61,7 @@ var clearTableSelection = function() {
 var onClickElement = function(obj){
   clearTableSelection();
   $("#executeButton").removeAttr("disabled");
+  //$("#removeButton").removeAttr("disabled"); TODO remove when operational
 
   $.ajax({
       url: '/getDescription/' + obj.getAttribute('id'),
