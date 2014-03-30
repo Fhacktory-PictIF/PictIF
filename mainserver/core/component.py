@@ -289,8 +289,7 @@ class FacesDetector(Component):
         if not self.executed and self.parent is not None:
             self.executeParent()
 
-            self.images = self.parent.images
-            for i in self.images:
+            for i in self.parent.images:
                 img = cv2.imread(i.path)
                 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 ret,thresh = cv2.threshold(gray,127,255,0)
@@ -299,7 +298,11 @@ class FacesDetector(Component):
                 for (x,y,w,h),k in zip(faces,range(len(faces))):
                     #cv2.ellipse(img, (x + w / 2,y + h / 2),(w / 2,h / 2), 0, 0, 360,(255,0,0),2)
                     o = img[y: y + h, x: x + w]
+                    path = dir_tmp + i.name + str(self.id) + str(k) + '.jpg'
                     cv2.imwrite(dir_tmp + i.name + str(self.id) + str(k) + '.jpg', o)
+                    image = ImageData(path)
+                    image.date = time.ctime(os.path.getctime(image.path))
+                    self.images.append(image)
                     #for c,k in zip(contours,range(len(contours))):
                     #   if cv2.pointPolygonTest(c,(x,y),False) > -1:
                     #       cv2.drawContours(img, contours, k, (0,255,0), 3)
@@ -333,9 +336,10 @@ class Recognizer(Component):
 
             self.patterns = self.parent2.images
 
-            #f = open('../test/positives.dat', 'w')
+            f = open('../test/positives.dat', 'w')
             for i in self.images:
-                print dir_tmp + i.name + str(self.parent.id) + i.extension
+                f.write(i.path + "\n")
+            f.close()
 
             #retvalue = os.system("ps -p 2993 -o time --no-headers")
 

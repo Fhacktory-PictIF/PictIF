@@ -40,13 +40,13 @@
         <div  align="right">
             <!--<input type="button" class="btn btn-default" value="Reset" id="resetButton" onclick="reset()">-->
 
-            <input type="file" id="loadInput" accept="image/*" style="display:none">
-            <input type="button" class="btn btn-default" value="Import" id="loadButton" onclick="load()">
+            <input type="file" id="loadInput" style="display:none" onchange="load()">
+            <input type="button" class="btn btn-default" value="Import" id="loadButton" onclick="choose('loadInput')">
 
             <input type="button" class="btn btn-default" value="Execute" id="executeButton" onclick="execute()">
 
-            <input type="file" id="saveInput" style="display:none">
-            <input type="button" class="btn btn-default" value="Export" id="saveButton" onclick="save()">
+            <input type="file" id="saveInput" style="display:none" onchange="save()">
+            <input type="button" class="btn btn-default" value="Export" id="saveButton" onclick="choose('saveInput')">
         </div>
     </div>
 

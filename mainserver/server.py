@@ -3,6 +3,7 @@
 from flask import Flask, render_template, request, jsonify, Blueprint, current_app
 import cPickle as pickle
 import json
+import os.path
 
 from core.component import Component
 
@@ -60,7 +61,6 @@ def getBlockFromType(blockType):
     subclasses = Component.__subclasses__()
     sub = getClassName(blockType)
     for subclass in subclasses:
-        print subclass
         if subclass.__name__ == sub:
             comp = subclass()
             componentGestioner.map_of_component[comp.id] = comp
@@ -81,10 +81,14 @@ def saveWorkFlow(filepath):
     return json.dumps(resp)
 
 @app.route("/load/<filePath>", methods = ['POST'])
-def loadWorkFlow():
-    componentGestioner.map_of_component = pickle.load(open("saved.b", "rb"))
-    resp = dict(ok=True)
-    return json.dumps(resp)
+def loadWorkFlow(filePath):
+    try:
+        componentGestioner.map_of_component = pickle.load(open(filePath, "rb"))
+        resp = dict(ok=True)
+        return json.dumps(resp)
+    except:
+        resp = dict(ok=False)
+        return json.dumps(resp)
 
 @app.route("/block/addConnection", methods = ['POST'])
 def addConnection() :
