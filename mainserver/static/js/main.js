@@ -110,6 +110,7 @@ function addBlock() {
     }
 }
 
+/*
 function reset() {
     //TODO reset un bloc selectionne sur le canevas
     $.ajax({
@@ -122,10 +123,10 @@ function reset() {
         }});
     notify("Node reset: TODO ID\n");
 }
+*/
 
 function execute() {
     notify("Executing node TODO...");
-    //TODO execute un bloc selectionne sur le canevas
     $.ajax({
         url: '/block/execute/' + 'TODOOOOO',
         type: 'POST',
@@ -138,6 +139,7 @@ function execute() {
 }
 
 function save() {
+    $("#saveButton").attr("disabled", "disabled");
     notify("Saving work flow...");
     //Save everything
     $.ajax({
@@ -146,10 +148,17 @@ function save() {
         dataType: "json",
         data: JSON.stringify("data"),
         success : function(data){
-
+            if(data.ok)
+            {
+                notify("Done\n");
+            }
+            else
+            {
+                notify("\nError: workflow could not be saved\n");
+            }
+            $("#saveButton").removeAttr("disabled");
         }});
 
-    notify("Done\n");
 }
 
 $("#addButton").attr("disabled", "disabled");
