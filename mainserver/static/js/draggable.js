@@ -3,6 +3,8 @@
 $(document).ready(function() {
 
     var map = {};
+    var currentComponent = null;
+    var currentPicIdx = 0;
 
 
   var endpointStyle = {
@@ -25,74 +27,94 @@ $(document).ready(function() {
 });
 
 var detachFunction = function(conn){
-    var resultConf = confirm("confirm detach ?");
-    var result = false;
-            if ( resultConf == true ) {
-                $.ajax({
-                    url: '/block/removeConnection',
-                    type: 'POST',
-                    async: false,
-                    dataType: "json",
-                    data: JSON.stringify({"currentId": conn.targetId, "parentId":conn.sourceId}),
-                    contentType: 'application/json;charset=UTF-8',
-                    success : function(data){
-                        result = data.ok;
-                        //TODO Recuperer les donnees et ajouter un bloc au canevas
-                    }});
-                return result;
-            }
-            else {
-                return result;
-            }
-};
+  $.ajax({
+      url: '/block/removeConnection',
+      type: 'POST',
+      async: false,
+      dataType: "json",
+      data: JSON.stringify({"currentId": conn.targetId, "parentId":conn.sourceId}),
+      contentType: 'application/json;charset=UTF-8',
+      success : function(data){
+        return data.ok;
+      }});
+}
 
 var dropFunction = function(params){
-    var resultConf = confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
-    var result = false;
-    if ( resultConf == true ) {
-                $.ajax({
-                    url: '/block/addConnection',
-                    type: 'POST',
-                    async: false,
-                    dataType: "json",
-                    data: JSON.stringify({"currentId":  params.targetId , "parentId":params.sourceId }),
-                    contentType: 'application/json;charset=UTF-8',
-                    success : function(data){
-                        result = Boolean(data.ok);
-                        //TODO Recuperer les donnees et ajouter un bloc au canevas
-                    }});
-                return result;
-            }
-    else {
-        return result ;
-    }
+  $.ajax({
+      url: '/block/addConnection',
+      type: 'POST',
+      async: false,
+      dataType: "json",
+      data: JSON.stringify({"currentId":  params.targetId , "parentId":params.sourceId }),
+      contentType: 'application/json;charset=UTF-8',
+      success : function(data){
+        return data.ok;
+        //TODO Recuperer les donnees et ajouter un bloc au canevas
+      }});
 }
 
 var onClickElement = function(obj){
-    $.ajax({
-        url: '/getDescription',
-        type: 'POST',
-        async: false,
-        dataType: "json",
-        data: JSON.stringify(obj.getAttribute('id')),
-        contentType: 'application/json;charset=UTF-8',
-        success : function(data){
-            for (i=0; i<data.lenght; i++)
-            switch (data[i][2])
+  $.ajax({
+      url: '/getDescription',
+      type: 'POST',
+      async: false,
+      dataType: "json",
+      data: JSON.stringify(obj.getAttribute('id')),
+      contentType: 'application/json;charset=UTF-8',
+      success : function(data){
+        currentComponent = data;
+        currentPicIdx = 0;
+        if(data.images.length <= 1)
         {
+          $("#nextButton").attr("disabled", "disabled");
+          $("#previousButton").attr("disabled", "disabled");
+        }
+        else
+        {
+          $("#nextButton").removeAttr("disabled");
+        }
+
+        $("#description").val(data.strDesc);
+        if(data.images.length != 0)
+        {
+          $("#renderPic").attr('src', data.images[0]);
+        }
+
+        for (i=0; i<data.description.lenght; i++)
+          switch (data.description[i][2])
+          {
             case "int":
 
 
             case "string":
 
 
-            case ""
-        }
-    }});
-
+            case "":
+          }
+  }});
 }
 
+var next = function(){
+  $("#previousButton").removeAttr("disabled");
+  $("#renderPic").attr('src', data.images[currentPicIdx]);
+  currentPicIdx += 1;
 
+  if(currentPicIdx == currentComponent.images.length - 1)
+  {
+    $("#nextButton").attr("disabled", "disabled");
+  }
+}
+
+var previous = function(){
+  $("#nextButton").removeAttr("disabled");
+  $("#renderPic").attr('src', data.images[currentPicIdx]);
+  currentPicIdx += 1;
+
+  if(currentPicIdx == 0)
+  {
+    $("#previousButton").attr("disabled", "disabled");
+  }
+}
 
 var addDraggableComponent = function(id, type){
     var newState = $('<div>').attr('id', String(id)).attr('onclick',"javascript: onClickElement(this)").addClass('itemDrag');
@@ -121,5 +143,4 @@ var addDraggableComponent = function(id, type){
     });
 
     jsPlumb.addEndpoint(String(id),  {anchor:"TopLeft",isTarget:true});
-
 };

@@ -102,7 +102,7 @@ function addBlock() {
                 if(data.ok)
                 {
                     notify(type + " block added\n");
-                    addDraggableComponent(data.id, type)
+                    addDraggableComponent(data.id, type);
                 }
                 else
                 {
@@ -194,4 +194,11 @@ function load() {
 }
 
 $("#addButton").attr("disabled", "disabled");
+$("#nextButton").attr("disabled", "disabled");
+$("#previousButton").attr("disabled", "disabled");
+$("#search").val("");
+$("#console").val("");
+$("#description").val("");
+$("#configuration").innerHTML = "";
+$("#renderPic").attr('src', "../static/img/upload_b.png");
 fillInitTable();

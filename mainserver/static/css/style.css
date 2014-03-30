@@ -15,15 +15,16 @@
 
 .blocksList
 {
-   height:81%;
+   height:86%;
    margin-bottom:10px;
    overflow-y:scroll;
 }
 
 .description
 {
-   height:20%;
+   height:14.5%;
    padding:5px;
+   margin-bottom:15px;
    resize: none;
    overflow-y:scroll;
 }
@@ -31,12 +32,12 @@
 .visualisation
 {
    height:40%;
-   margin-bottom:15px;
+   margin-bottom:5px;
 }
 
 .configuration
 {
-   height:23%;
+   height:29%;
    margin-bottom:15px;
    padding:5px;
    resize: none;

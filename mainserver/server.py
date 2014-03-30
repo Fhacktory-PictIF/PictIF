@@ -68,7 +68,7 @@ def getBlockFromType(blockType):
             return json.dumps(resp)
 
     resp = {'ok': False}
-    return json.dumps(resp)     
+    return json.dumps(resp)
 
 @app.route("/save/<filePath>", methods = ['POST'])
 def saveWorkFlow(filepath):
@@ -115,7 +115,8 @@ def getDescription() :
         blockId = json.loads(request.data)
         component = componentGestioner.map_of_component[blockId]
         listAttr = [attr.split(":") for attr in component.attr_description.split(",") ]
-        resp={'ok':True, 'description':listAttr, 'images' : component.images }
+        resp={'ok':True, 'description':listAttr, 'images' : component.images, 'strDesc': component.description }
+        return json.dumps(resp)
 
     resp={'ok':False}
     return json.dumps(resp)
