@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import time
 from component import Component
-import numpy
 from IO import O, ImageData
 from SimpleCV import Color
 import cv2
@@ -16,15 +15,17 @@ class Cropper(Component):
 		self.y = 0
 		self.width = 100
 		self.height = 100
+		self.images = []
 
 	def process(self):
 
 		self.executeParent()
 
+		self.images = self.parent.images
 		for im in self.images:
 			im.image = im.image.crop(self.x,self.y,self.width,self.height)
 		
-		self.output.write(self.images,'../cropped/',self.name)
+		self.output.write(self.images,'../../test/cropped/',self.id)
 
 		self.executed = True
 
@@ -46,7 +47,7 @@ class GrayScale(Component):
 
 		self.executed = True
 		
-		self.output.write(self.images,'../binarized/',self.name)
+		self.output.write(self.images,'../../test/binarized/',self.id)
 
 class ChromaKey(Component):
 

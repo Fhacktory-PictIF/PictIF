@@ -11,7 +11,7 @@ class O():
 
     def write(self, images, path, ComponentId):
         for image in images:
-            image.image.save(path + image.name + ComponentId + image.extension)
+            image.image.save(path + image.name + str(ComponentId) + image.extension)
 
 class ImageData():
     """Image object"""
