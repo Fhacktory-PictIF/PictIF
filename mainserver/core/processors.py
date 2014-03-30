@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import time
 from component import Component
-import numpy
 from IO import O, ImageData
 from SimpleCV import Color
 import cv2
@@ -23,7 +22,7 @@ class Cropper(Component):
 
 		for im in self.images:
 			im.image = im.image.crop(self.x,self.y,self.width,self.height)
-		
+
 		self.output.write(self.images,'../cropped/',self.name)
 
 		self.executed = True
@@ -45,7 +44,7 @@ class GrayScale(Component):
 			im.image = (red.toGray() + green.toGray() + blue.toGray()) / self.degree
 
 		self.executed = True
-		
+
 		self.output.write(self.images,'../binarized/',self.name)
 
 class ChromaKey(Component):
@@ -64,7 +63,7 @@ class ChromaKey(Component):
 			self.executeParent()
 
 		mask = self.green_screen.image.hueDistance(color=Color.GREEN).binarize()
-		
+
 		result = (self.green_screen.image - mask) + (self.background.image - mask.invert())
 		result.show()
 		time.sleep(10)
@@ -91,7 +90,7 @@ class FacesDetector(Component):
 		for (x,y,w,h) in faces:
 		    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
 		cv2.drawContours(img, contours, -1, (0,255,0), 3)
-		
+
 
 		cv2.imshow('img',img)
 		cv2.waitKey(0)

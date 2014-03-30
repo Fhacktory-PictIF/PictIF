@@ -68,7 +68,6 @@ $('#search').on('input', function() {
     });
 });
 
-<<<<<<< Updated upstream
 function notify(msg)
 {
     $('#console').val($('#console').val() + msg);
@@ -77,95 +76,81 @@ function notify(msg)
 function selectLine(obj) {
     var idLigne=obj.id;
     obj.className="danger";
+    $("#addButton").removeAttr("disabled");
 
     if (oldObj!=null) {
-        oldObj.className = "item";
+        oldObj.className = "";
         oldObj = obj;
-=======
-$(document).ready(function() {
-    function notify(msg)
-    {
-        $('#console').val($('#console').val() + msg);
->>>>>>> Stashed changes
     }
-
-    function selectLine(obj) {
-        var idLigne=obj.id;
-        obj.className="danger";
-
-        if (oldObj!=null) {
-            oldObj.className = "";
-            oldObj = obj;
-        }
-        else {
-            oldObj = obj;
-        }
-    }
-
-    function addBlock() {
-        var objId;
-
-        if(objId != null) {
-            $.ajax({
-                url: '/block/add/' + oldObj.id,
-                type: 'POST',
-                dataType: "json",
-                data: JSON.stringify("data"),
-                success : function(data){
-                    if(data.ok)
-                    {
-                        notify(oldObj.id + "block added\n");
-                        addComponent(id, oldObj.id)
-                    }
-                    else
-                    {
-                        notify("Error: " + oldObj.id + "block could not be added\n");
-                    }
-                }});
-        }
-    }
-
-    function reset() {
-        //TODO reset un bloc selectionne sur le canevas
-        $.ajax({
-            url: "/block/reset/" + "TODOOOOO",
-            type: 'POST',
-            dataType: "json",
-            data: JSON.stringify("data"),
-            success : function(data){
-
-            }});
-        notify("Node reset: TODO ID\n");
-    }
-
-    function execute() {
-        notify("Executing node TODO...");
-        //TODO execute un bloc selectionne sur le canevas
-        $.ajax({
-            url: '/block/execute/' + 'TODOOOOO',
-            type: 'POST',
-            dataType: "json",
-            data: JSON.stringify("data"),
-            success : function(data){
-
-            }});
-        notify("Done\n");
-    }
-
-    function save() {
-        notify("Saving work flow...");
-        //Save everything
-        $.ajax({
-            url: '/save',
-            type: 'POST',
-            dataType: "json",
-            data: JSON.stringify("data"),
-            success : function(data){
-
-            }});
-
-        notify("Done\n");
+    else {
+        oldObj = obj;
     }
 }
 
+function addBlock() {
+    if(oldObj != null) {
+        var type = document.getElementById(oldObj.id).firstChild.innerHTML;
+
+        $.ajax({
+            url: '/block/add/' + type,
+            type: 'POST',
+            dataType: "json",
+            data: JSON.stringify("data"),
+            success : function(data){
+                if(data.ok)
+                {
+                    notify(type + " block added\n");
+                    addComponent(id, type)
+                }
+                else
+                {
+                    notify("Error: " + type + " block could not be added\n");
+                }
+            }});
+    }
+}
+
+function reset() {
+    //TODO reset un bloc selectionne sur le canevas
+    $.ajax({
+        url: "/block/reset/" + "TODOOOOO",
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+
+        }});
+    notify("Node reset: TODO ID\n");
+}
+
+function execute() {
+    notify("Executing node TODO...");
+    //TODO execute un bloc selectionne sur le canevas
+    $.ajax({
+        url: '/block/execute/' + 'TODOOOOO',
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+
+        }});
+    notify("Done\n");
+}
+
+function save() {
+    notify("Saving work flow...");
+    //Save everything
+    $.ajax({
+        url: '/save',
+        type: 'POST',
+        dataType: "json",
+        data: JSON.stringify("data"),
+        success : function(data){
+
+        }});
+
+    notify("Done\n");
+}
+
+$("#addButton").attr("disabled", "disabled");
 fillInitTable();

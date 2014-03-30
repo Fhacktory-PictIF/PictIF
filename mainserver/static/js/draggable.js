@@ -40,7 +40,7 @@ $(document).ready(function() {
 
 });
 
-var addDraggableComponent function(id, type){
+function addDraggableComponent(id, type) {
     var newState = $('<div>').attr('id', 'state' + i).addClass('itemDrag');
 
     var title = $('<div>').addClass('title').text('State ' + i);

@@ -15,6 +15,25 @@ class ComponentGestion(object) :
 
 componentGestioner = ComponentGestion()
 
+def getClassName(classDescr):
+    for key in Component.ioComponents:
+        if Component.ioComponents[key] == classDescr:
+            return key
+
+    for key in Component.processors:
+        if Component.processors[key] == classDescr:
+            return key
+
+    for key in Component.selectors:
+        if Component.selectors[key] == classDescr:
+            return key
+
+    for key in Component.statistics:
+        if Component.statistics[key] == classDescr:
+            return key
+
+    return None
+
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -37,17 +56,21 @@ def resetBlock(blockId):
 
 @app.route("/block/add/<blockType>", methods = ['POST'])
 def getBlockFromType(blockType):
-    subclasses = Component.__subclasses__()
-    for subclass in subclasses:
-        if subclass == blockType:
-            comp = subclass()
-            componentGestioner.map_of_component[comp.id] = comp
-            resp = {'ok': False, 'id': comp.id}
-        return json.dump(resp)
+    subclass = getClassName(blockType)
 
+    if subclass != None:
+        subclasses = Component.__subclasses__()
+        print subclass
+        for sub in subclasses:
+            print sub.__name__
+            if sub.__name__ == subclass:
+                comp = sub()
+                componentGestioner.map_of_component[comp.id] = comp
+                resp = dict(ok=False, id=comp.id)
+                return json.dumps(resp)
 
-    resp = {'ok': False}
-    return json.dump(resp)
+    resp = dict(ok=False)
+    return json.dumps(resp)
 
 @app.route("/save", methods = ['POST'])
 def saveWorkFlow():
@@ -56,8 +79,8 @@ def saveWorkFlow():
 
 @app.route("/addConnection", methods = ['POST'])
 def addConnection() :
-    resp={'ok':True, 'result':''}
-    return json.dump(resp)
+    resp=dict(ok=True)
+    return json.dumps(resp)
 
 @app.route("/removeConnection", methods = ['POST'])
 def removeConnection() :
