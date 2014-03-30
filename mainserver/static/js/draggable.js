@@ -6,7 +6,6 @@ $(document).ready(function() {
     var currentComponent = null;
     var currentPicIdx = 0;
 
-
   var endpointStyle = {
       isTarget:true,
       maxConnections:5,
@@ -51,7 +50,19 @@ var dropFunction = function(params){
       }});
 }
 
+var clearTableSelection = function() {
+  $("#addButton").attr("disabled", "disabled");
+
+    var table = document.getElementById("blockslist");
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        row.removeAttribute("class");
+    }
+}
+
 var onClickElement = function(obj){
+  clearTableSelection();
+  $("#executeButton").removeAttr("disabled");
+
   $.ajax({
       url: '/getDescription/' + obj.getAttribute('id'),
       type: 'GET',
