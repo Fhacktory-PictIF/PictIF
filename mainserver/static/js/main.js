@@ -141,7 +141,6 @@ function reset() {
 function execute() {
     notify("Executing node TODO...");
     $.ajax({
-<<<<<<< HEAD
         url: '/block/execute/' + currentComponent.id,
         type: 'POST',
         dataType: "json",
