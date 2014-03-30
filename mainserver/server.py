@@ -57,14 +57,14 @@ def resetBlock(blockId):
 @app.route("/block/add/<blockType>", methods = ['POST'])
 def getBlockFromType(blockType):
     subclasses = Component.__subclasses__()
+    sub = getClassName(blockType)
     for subclass in subclasses:
-        if subclass.__name__ == blockType:
+        print subclass
+        if subclass.__name__ == sub:
             comp = subclass()
             componentGestioner.map_of_component[comp.id] = comp
             resp = {'ok': True, 'id': comp.id}
-            print "OK !"
             return json.dumps(resp)
-
 
     resp = {'ok': False}
     return json.dumps(resp)
