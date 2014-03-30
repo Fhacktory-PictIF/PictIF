@@ -1,14 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from component import Component
+import component
 from IO import O, ImageData
-import os, time
+import os
 
-class Reader(Component):
-
+class Reader(component.Component):
+    attr_description = component.Component.attr_description + "pathes:list:lists of file or folder pathes,\
+            length:int:images count,key_points:list:osef,mean_colors:list:osef2"
+    description = "Creates a data stream from a file or a folder and its subfolders."
+    
     def __init__(self):
-        Component.__init__(self)
-        self.description = "Creates a data stream from a file or a folder and its subfolders."
+        component.Component.__init__(self)
         self.pathes = None
         self.length = None
         self.key_points = []
@@ -45,13 +47,14 @@ class Reader(Component):
                         images.append(img)
         self.images = images
 
-class Writer(Component):
+class Writer(component.Component):
     """Writes pics on disc"""
+    attr_description = component.Component.attr_description + "path:string:File path"
+    description = "Writes the content of the data stream's content in a specified path."
+
     def __init__(self):
-        Component.__init__(self)
-        self.description = "Writes the content of the data stream's content in a specified path."
-        self.path = ""
-        self.osef = "File path:string,etc."
+        component.Component.__init__(self)
+        self.path = "" #TODO
         
     def process(self):
         O.write(self.images, self.path, "")
