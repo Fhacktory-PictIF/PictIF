@@ -111,8 +111,12 @@ var onClickElement = function(obj){
         {
           $("#renderPic").attr('src', data.images[0]);
         }
-
-        $("#configuration").html(readerTemplate({"id" :obj.getAttribute('id')}));
+        var content;
+        if (data.class == "Reader")
+        {
+            content = readerTemplate({"id" :obj.getAttribute('id')})
+        } 
+        $("#configuration").html(content);
   }});
 }
 
