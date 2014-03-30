@@ -194,7 +194,7 @@ class ImageStack(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.directory = ""
+        self.directory = "./test/cam/"
         self.intensity = 5
 
     def process(self):
