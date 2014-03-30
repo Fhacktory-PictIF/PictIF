@@ -100,7 +100,7 @@ function addBlock() {
                 if(data.ok)
                 {
                     notify(type + " block added\n");
-                    addDraggableComponent(id, type)
+                    addDraggableComponent(data.id, type)
                 }
                 else
                 {

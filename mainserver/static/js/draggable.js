@@ -21,47 +21,55 @@ $(document).ready(function() {
         isTarget:true
     };
 
-  $('#container').dblclick(function(e) {
-        addDraggableComponent(e);
-  });
 
 });
 
 var detachFunction = function(conn){
-    var result = confirm("confirm detach ?");
-            alert(JSON.stringify({'currentId':JSON.stringify(conn.targetId), 'parentId':JSON.stringify(conn.sourceId)}));
-            if ( result == true ) {
+    var resultConf = confirm("confirm detach ?");
+    var result = false;
+            if ( resultConf == true ) {
                 $.ajax({
                     url: '/block/removeConnection',
                     type: 'POST',
-                    async: true,
+                    async: false,
                     dataType: "json",
                     data: JSON.stringify({"currentId": conn.targetId, "parentId":conn.sourceId}),
                     contentType: 'application/json;charset=UTF-8',
                     success : function(data){
+                        result = data.ok;
                         //TODO Recuperer les donnees et ajouter un bloc au canevas
                     }});
+                return result;
+            }
+            else {
+                return result;
             }
 };
 
 var dropFunction = function(params){
-    var result = confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
-    if ( result == true ) {
+    var resultConf = confirm("Connect " + params.sourceId + " to " + params.targetId + "?");
+    var result = false;
+    if ( resultConf == true ) {
                 $.ajax({
                     url: '/block/addConnection',
                     type: 'POST',
-                    async: true,
+                    async: false,
                     dataType: "json",
                     data: JSON.stringify({"currentId":  params.targetId , "parentId":params.sourceId }),
                     contentType: 'application/json;charset=UTF-8',
                     success : function(data){
+                        result = Boolean(data.ok);
                         //TODO Recuperer les donnees et ajouter un bloc au canevas
                     }});
+                return result;
             }
+    else {
+        return result ;
+    }
 }
 
 var addDraggableComponent = function(id, type){
-    var newState = $('<div>').attr('id', String(id)).addClass('itemDrag');
+    var newState = $('<div>').attr('id', String(id)).attr('onclick',"javascript: onClickElement()").addClass('itemDrag');
     var title = $('<div>').addClass('title').text(type);
     var connect = $('<div>').addClass('connect');
 
@@ -82,8 +90,7 @@ var addDraggableComponent = function(id, type){
         anchor:"BottomLeft",
         isTarget:true,
         beforeDrop: function(params) {
-             dropFunction(params);
-            
+            return dropFunction(params);
         }
     });
 

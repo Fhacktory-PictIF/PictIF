@@ -59,15 +59,14 @@ def getBlockFromType(blockType):
     subclasses = Component.__subclasses__()
     sub = getClassName(blockType)
     for subclass in subclasses:
-        print subclass
         if subclass.__name__ == sub:
             comp = subclass()
-            componentGestioner.map_of_component[comp.id] = comp
+            componentGestioner.map_of_component[str(comp.id)] = comp
             resp = {'ok': True, 'id': comp.id}
             return json.dumps(resp)
 
     resp = {'ok': False}
-    return json.dumps(resp)
+    return json.dumps(resp)     
 
 @app.route("/save", methods = ['POST'])
 def saveWorkFlow():
@@ -79,9 +78,8 @@ def addConnection() :
     if request.method == 'POST' :
         param = json.loads(request.data)
         parentId, currentId = param['parentId'], param['currentId']
-        current_component = componentGestioner.map_of_component.get(currentId)
-        parent_component = componentGestioner.map_of_component.get(parentId)
-        
+        current_component = componentGestioner.map_of_component[currentId]
+        parent_component = componentGestioner.map_of_component[parentId]
         #Addcomponent to parent
         if (current_component != None and parent_component != None and current_component.parent == None) :
             componentGestioner.map_of_component[currentId].parent = componentGestioner.map_of_component[parentId]
@@ -98,7 +96,6 @@ def addConnection() :
 def removeConnection() :
     if request.method == 'POST' :
         #warning, the currentId is the one whose parent have to be suppressed.
-        print request.data
         param = json.loads(request.data)
         parentId, currentId = param['parentId'], param['currentId']
         current_component = componentGestioner.map_of_component.get(currentId)
@@ -106,6 +103,7 @@ def removeConnection() :
         #Addcomponent to parent
         if (current_component != None and parent_component != None) :
             if current_component.id == parentId :
+                print "smdwonvfsodfhqsdjhf"
                 current_component.parent = None
             resp = {'ok': True}
             return json.dumps(resp)
