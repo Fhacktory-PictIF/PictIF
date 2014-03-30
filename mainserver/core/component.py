@@ -100,10 +100,7 @@ class FileFilter(Component):
         if not self.executed and self.parent is not None:
             self.executeParent()
 
-            if self.images is None:
-                self.images = []
-
-            tempI = set(self.images + self.parent.images)
+            tempI = set(self.parent.images)
             tempO = set()
             if self.time_reference is not None:
                 for image in tempI:
@@ -155,7 +152,9 @@ class O():
     @classmethod
     def write(cls, images, path, ComponentId):
         for image in images:
-            image.image.save(path + image.name + str(ComponentId) + image.extension)
+            image.path = path + image.name + str(ComponentId) + image.extension
+            image.image.save(image.path)
+            image.date = time.ctime(os.path.getctime(image.path))
 
 class ImageData():
     """Image object"""
@@ -342,8 +341,6 @@ class Recognizer(Component):
             #retvalue = os.system("ps -p 2993 -o time --no-headers")
 
             #O.write(self.images,dir_tmp,self.id)
-
-
 
 class Reader(Component):
     attr_description = Component.attr_description + "pathes:list(string):lists of file or folder pathes,\
