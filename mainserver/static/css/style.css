@@ -1,5 +1,5 @@
 
-.whiteBorderDiv, .flow, .blocksList, .description, .visualisation, .configuration, .console, .search
+.whiteBorderDiv, .flow, .blocksList, .description, .visualisation, .configuration, .console, .search, .filePicker
 {
    background-color:#FFFFFF;
    border: 2px solid #888;
@@ -55,4 +55,9 @@
 .search
 {
    margin-bottom:10px;
+}
+
+.filePicker
+{
+   padding:5px;
 }

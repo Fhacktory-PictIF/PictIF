@@ -15,8 +15,12 @@ def generateId():
 class Component(object):
     ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
+<<<<<<< HEAD
     selectors = dict(RowFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
     dir_tmp = tempfile.gettempdir()
+=======
+    selectors = dict(FileFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
+>>>>>>> 65ca49b14cbc6ec94fb0c7291560b7101f060ff8
     statistics = []
     #classmere.__subclasses__() return list
 
