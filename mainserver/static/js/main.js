@@ -38,6 +38,12 @@ Object.size = function(obj) {
     return size;
 };
 
+/* Handlebars */
+loadTemplate = function(template_id) {
+    var source = $(template_id).html();
+    return Handlebars.compile(source);
+}
+
 function checkSearch(data, words) {
     var table = document.getElementById('blockslist');
     table.innerHTML = "";
@@ -133,8 +139,9 @@ function reset() {
 */
 
 function execute() {
-    notify("Executing node...");
+    notify("Executing node TODO...");
     $.ajax({
+<<<<<<< HEAD
         url: '/block/execute/' + currentComponent.id,
         type: 'POST',
         dataType: "json",
@@ -220,8 +227,8 @@ function load() {
         success : function(data){
             if(data.ok)
             {
-                cleanDisplay();
                 notify("Done\n");
+                notify("TODO: CLEAN + UPDATE UI\n");
             }
             else
             {
@@ -243,7 +250,6 @@ function cleanDisplay()
 }
 
 cleanDisplay();
-$("#loadButton").attr("disabled", "disabled");  //TORO remove when managed
 $("#addButton").attr("disabled", "disabled");
 $("#executeButton").attr("disabled", "disabled");
 $("#removeButton").attr("disabled", "disabled");

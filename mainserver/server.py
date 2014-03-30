@@ -124,7 +124,7 @@ def getStaticDescription(type) :
         for subclass in subclasses:
             if subclass.__name__ == sub:
                 #TODO CONFIGURATION READONLY
-                listAttr = []
+                listAttr = [attr.split(":") for attr in subclass.attr_description.split(",")]
                 resp={'ok':True, 'description':listAttr, 'strDesc': subclass.description }
                 return json.dumps(resp)
 
@@ -135,25 +135,33 @@ def getStaticDescription(type) :
 def getDescription(objId) :
     if request.method == 'GET' :
         component = componentGestioner.map_of_component[objId]
-        listAttr = ["TODO CONFIGURATION PAS READ ONLY"]
-        resp={'ok':True, 'id':objId, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
+        listAttr = json.dumps(component.__dict__)
+        resp={'ok':True,"class": component.__class__.__name__, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
         return json.dumps(resp)
 
     resp={'ok':False}
     return json.dumps(resp)
 
+@app.route("/setPathes/<reader_id>", methods = ['POST'])
+def setPathes(reader_id) :
+    component = componentGestioner.map_of_component[reader_id]
+    pathes = request.json['pathes']
+    component.setPathes(pathes)
+    resp={'ok':True}
+    return json.dumps(resp)
+    
 @app.route("/block/removeConnection", methods = ['POST'])
 def removeConnection() :
     if request.method == 'POST' :
         #warning, the currentId is the one whose parent have to be suppressed.
         param = json.loads(request.data)
         parentId, currentId = param['parentId'], param['currentId']
-        current_component = componentGestioner.map_of_component.get(currentId)
-        parent_component = componentGestioner.map_of_component.get(parentId)
+        current_component = componentGestioner.map_of_component[currentId]
+        parent_component = componentGestioner.map_of_component[parentId]
         #Addcomponent to parent
+        print parentId, current_component.parent.id;
         if (current_component != None and parent_component != None) :
-            if current_component.id == parentId :
-                print "smdwonvfsodfhqsdjhf"
+            if current_component.parent.id == parentId :
                 current_component.parent = None
             resp = {'ok': True}
             return json.dumps(resp)
