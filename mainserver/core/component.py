@@ -194,7 +194,7 @@ class ImageStack(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.directory = "./test/cam/"
+        self.directory = "./test/treated/cam/"
         self.intensity = 5
 
     def process(self):
@@ -415,7 +415,7 @@ class CamReader(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.duration = 4 # in seconds
+        self.duration = 6 # in bi-seconds
 
     def process(self):
         self.images = []
@@ -486,7 +486,7 @@ class Writer(Component):
 
     def __init__(self):
         Component.__init__(self)
-        self.path = "" #TODO
+        self.path = "./test/"
 
     def process(self):
         O.write(self.images, self.path, "Lol")
