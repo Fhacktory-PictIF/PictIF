@@ -150,10 +150,10 @@ var displayStaticDescription = function(blockType){
   }});
 }
 
-var next = function(){
+var displayNext = function(){
   $("#previousButton").removeAttr("disabled");
-  $("#renderPic").attr('src', data.images[currentPicIdx]);
   currentPicIdx += 1;
+  $("#renderPic").attr('src', currentComponent.images[currentPicIdx]);
 
   if(currentPicIdx == currentComponent.images.length - 1)
   {
@@ -161,10 +161,10 @@ var next = function(){
   }
 }
 
-var previous = function(){
+var displayPrevious = function(){
   $("#nextButton").removeAttr("disabled");
-  $("#renderPic").attr('src', data.images[currentPicIdx]);
-  currentPicIdx += 1;
+  currentPicIdx -= 1;
+  $("#renderPic").attr('src', currentComponent.images[currentPicIdx]);
 
   if(currentPicIdx == 0)
   {
