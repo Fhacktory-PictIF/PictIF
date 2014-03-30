@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import time, os, tempfile
-from SimpleCV import Image, Color
+from SimpleCV import Image, Color, Camera
 import cv2
 
 nbComponents = 0
@@ -14,7 +14,7 @@ def generateId():
     return nbComponents
 
 class Component(object):
-    ioComponents = dict(Reader='Picture Reader', Writer='Picture Writer')
+    ioComponents = dict(CamReader="Camera stream Reader", Reader='Picture Reader', Writer='Picture Writer')
     processors = dict(Cropper='Cropper', GrayScale='Gray Scale', ChromaKey='Chromakey')
     dir_tmp = tempfile.gettempdir()
     selectors = dict(FileFilter='File Filter', Joiner='Joiner', Splitter='Splitter')
@@ -340,6 +340,27 @@ class Recognizer(Component):
             #retvalue = os.system("ps -p 2993 -o time --no-headers")
 
             #O.write(self.images,dir_tmp,self.id)
+
+class CamReader(Component):
+    """Converts a stream from camera into some static filestream"""
+    attr_description = Component.attr_description + "duration:int:Capture duration"
+    description = "Converts a stream from camera into some static filestream"
+
+    def __init__(self):
+        Component.__init__(self)
+        self.duration = 4 # in seconds
+
+    def process(self):
+        self.images = []
+        cam = Camera()
+        for i in xrange (0,2*self.duration-1):
+            pth = dir_tmp + "cam" + str(i) + ".jpeg"
+            image = cam.getImage()
+            image.save(pth)
+            imageD = ImageData(pth)
+            self.images.append(imageD)
+            time.sleep(1)
+
 
 class Reader(Component):
     attr_description = Component.attr_description + "pathes:list(string):lists of file or folder pathes,\
