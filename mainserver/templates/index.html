@@ -48,7 +48,7 @@
 
     <div class="col-md-3" >
         <textarea readonly id="description" class="description">Description</textarea>
-        <textarea readonly class="configuration" id="configuration">configuration</textarea>
+        <div class="configuration" id="configuration">configuration</div>
         <div class="visualisation">
                 <img src="../static/img/upload_b.png" style="max-height:100%; max-width:100%; margin:auto; display:block" id="renderPic" class="borderDiv">
         </div>
@@ -64,8 +64,20 @@
 {% block javascript %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+{% raw %}
+<script id="reader-template" type="text/x-handlebars-template">
+  <div  class="reader">
+    <span>Reader <strong>{{id}}</strong></span>
+  <form action="#">
+    Files: <input type="text" class="path"><br>
+    <input type="submit" value="Submit" onclick="submitReader()">
+    </form> 
+</div>
+</script>
+{% endraw %}
+<script type="text/javascript" src="/static/js/handlebars-v1.3.0.js"></script>
 <script type="text/javascript" src="../static/js/jquery.jsPlumb-1.4.1-all-min.js"></script>
+<script type="text/javascript" src="../static/js/main.js"></script>
 <script type="text/javascript" src="../static/js/draggable.js"></script>
-<script src="/static/js/main.js"></script>
 
 {% endblock %}

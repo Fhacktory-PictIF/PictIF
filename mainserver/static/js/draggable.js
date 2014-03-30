@@ -1,11 +1,10 @@
-
-
+/* Getting Handlebar templates */
+readerTemplate = loadTemplate('#reader-template');
 $(document).ready(function() {
 
-    var map = {};
-    var currentComponent = null;
-    var currentPicIdx = 0;
-
+  var map = {};
+  var currentComponent = null;
+  var currentPicIdx = 0;
 
   var endpointStyle = {
       isTarget:true,
@@ -60,6 +59,7 @@ var onClickElement = function(obj){
       contentType: 'application/json;charset=UTF-8',
       success : function(data){
         currentComponent = data;
+        console.log(data);
         currentPicIdx = 0;
         $("#description").val(data.strDesc);
         if(data.images.length <= 1)
@@ -77,7 +77,7 @@ var onClickElement = function(obj){
           $("#renderPic").attr('src', data.images[0]);
         }
 
-        //TODO CONFIGURATION NOT READONLY
+        $("#configuration").html(readerTemplate({"id" :obj.getAttribute('id')}));
   }});
 }
 
@@ -160,4 +160,17 @@ var addDraggableComponent = function(id, type){
     });
 
     jsPlumb.addEndpoint(String(id),  {anchor:"TopLeft",isTarget:true});
+};
+
+var submitReader = function() {
+  var path = $(".reader").find('input').val();
+  var id = $(".reader").find("strong").text();
+  $.ajax({
+      url: '/setPathes/' + id,
+      type: 'POST',
+      async: false,
+      dataType: "json",
+      data: JSON.stringify({"pathes":  path}),
+      contentType: 'application/json;charset=UTF-8',
+      });
 };

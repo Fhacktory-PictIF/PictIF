@@ -38,6 +38,12 @@ Object.size = function(obj) {
     return size;
 };
 
+/* Handlebars */
+loadTemplate = function(template_id) {
+    var source = $(template_id).html();
+    return Handlebars.compile(source);
+}
+
 function checkSearch(data, words) {
     var table = document.getElementById('blockslist');
     table.innerHTML = "";

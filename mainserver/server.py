@@ -117,7 +117,7 @@ def getStaticDescription(type) :
         for subclass in subclasses:
             if subclass.__name__ == sub:
                 #TODO CONFIGURATION READONLY
-                listAttr = []
+                listAttr = [attr.split(":") for attr in subclass.attr_description.split(",")]
                 resp={'ok':True, 'description':listAttr, 'strDesc': subclass.description }
                 return json.dumps(resp)
 
@@ -128,13 +128,21 @@ def getStaticDescription(type) :
 def getDescription(objId) :
     if request.method == 'GET' :
         component = componentGestioner.map_of_component[objId]
-        listAttr = ["TODO CONFIGURATION PAS READ ONLY"]
-        resp={'ok':True, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
+        listAttr = json.dumps(component.__dict__)
+        resp={'ok':True,"class": component.__class__.__name__, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
         return json.dumps(resp)
 
     resp={'ok':False}
     return json.dumps(resp)
 
+@app.route("/setPathes/<reader_id>", methods = ['POST'])
+def setPathes(reader_id) :
+    component = componentGestioner.map_of_component[reader_id]
+    pathes = request.json['pathes']
+    component.setPathes(pathes)
+    resp={'ok':True}
+    return json.dumps(resp)
+    
 @app.route("/block/removeConnection", methods = ['POST'])
 def removeConnection() :
     if request.method == 'POST' :
