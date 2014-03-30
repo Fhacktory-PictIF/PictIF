@@ -5,7 +5,7 @@ from IO import O, ImageData
 import os, time
 
 class Reader(Component):
-    attr_description = "pathes:list:lists of file or folder pathes,\
+    attr_description = Component.attr_description + "pathes:list:lists of file or folder pathes,\
             length:int:images count,key_points:list:osef,mean_colors:list:osef2"
     description = "Creates a data stream from a file or a folder and its subfolders."
     
@@ -49,7 +49,7 @@ class Reader(Component):
 
 class Writer(Component):
     """Writes pics on disc"""
-    attr_description = "path:string:File path"
+    attr_description = Component.attr_description + "path:string:File path"
     description = "Writes the content of the data stream's content in a specified path."
 
     def __init__(self):

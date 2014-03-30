@@ -18,7 +18,6 @@ class Component():
     statistics = []
     #classmere.__subclasses__() return list
 
-
     def __init__(self) :
     	self.parent = None
     	self.id = generateId()
