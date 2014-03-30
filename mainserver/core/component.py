@@ -300,7 +300,9 @@ class FacesDetector(Component):
                     o = img[y: y + h, x: x + w]
                     path = dir_tmp + i.name + str(self.id) + str(k) + '.jpg'
                     cv2.imwrite(dir_tmp + i.name + str(self.id) + str(k) + '.jpg', o)
-                    self.images.append(ImageData(path))
+                    image = ImageData(path)
+                    image.date = time.ctime(os.path.getctime(image.path))
+                    self.images.append(image)
                     #for c,k in zip(contours,range(len(contours))):
                     #   if cv2.pointPolygonTest(c,(x,y),False) > -1:
                     #       cv2.drawContours(img, contours, k, (0,255,0), 3)
@@ -334,9 +336,10 @@ class Recognizer(Component):
 
             self.patterns = self.parent2.images
 
-            #f = open('../test/positives.dat', 'w')
+            f = open('../test/positives.dat', 'w')
             for i in self.images:
-                print i.path
+                f.write(i.path + "\n")
+            f.close()
 
             #retvalue = os.system("ps -p 2993 -o time --no-headers")
 
