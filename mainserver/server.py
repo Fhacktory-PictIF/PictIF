@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, jsonify, Blueprint, current_app
+from cPickle import pickle
 import json
 
 from core.component import Component
@@ -71,6 +72,17 @@ def getBlockFromType(blockType):
 
 @app.route("/save", methods = ['POST'])
 def saveWorkFlow():
+    for key, component in componentGestioner:
+        for image in component.images:
+            image.load()
+            image.unload()
+    pickle.dump(componentGestioner, open("saved.b", "wb"))
+    resp = dict(ok=True)
+    return json.dumps(resp)
+
+@app.route("/save", methods = ['POST'])
+def loadWorkFlow():
+    componentGestioner = pickle.load(open("saved.b", "rb"))
     resp = dict(ok=True)
     return json.dumps(resp)
 
