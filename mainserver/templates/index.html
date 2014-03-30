@@ -40,7 +40,6 @@
 
             <input type="button" class="btn btn-default" value="Add" id="addButton" onclick="addBlock()">
             <input type="button" class="btn btn-default" value="Execute" id="executeButton" onclick="execute()">
-            <input type="button" class="btn btn-default" value="Remove" id="removeButton" onclick="remove()">
 
             <input type="button" class="btn btn-default" value="Export" id="saveButton" onclick="save()">
         </div>
@@ -68,6 +67,17 @@
 <script id="reader-template" type="text/x-handlebars-template">
   <div  class="reader">
     <span>Reader <strong>{{id}}</strong></span>
+  <form action="#">
+    Files: <input type="text" class="path"><br>
+    <input type="submit" value="Submit" onclick="submitReader()">
+    </form> 
+</div>
+</script>
+{% endraw %}
+{% raw %}
+<script id="cropper-template" type="text/x-handlebars-template">
+  <div  class="cropper">
+    <span>Cropper <strong>{{id}}</strong></span>
   <form action="#">
     Files: <input type="text" class="path"><br>
     <input type="submit" value="Submit" onclick="submitReader()">
