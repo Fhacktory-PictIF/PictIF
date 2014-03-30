@@ -9,7 +9,6 @@
 <link href="/static/css/bootstrap-select.css" rel="stylesheet">
 <link href="/static/css/style.css" rel="stylesheet">
 
-<div class="row">
     <div class="col-md-3" >
         <div class="search">
             <div class="input-group">
@@ -21,10 +20,6 @@
         <div class="blocksList">
             <table id="blockslist" class="table table-hover">
             </table>
-        </div>
-
-        <div align="right">
-            <input type="button" class="btn btn-default" value="Add" id="addButton" onclick="addBlock()">
         </div>
     </div>
 
@@ -43,6 +38,7 @@
             <input type="file" id="loadInput" style="display:none" onchange="load()">
             <input type="button" class="btn btn-default" value="Import" id="loadButton" onclick="choose('loadInput')">
 
+            <input type="button" class="btn btn-default" value="Add" id="addButton" onclick="addBlock()">
             <input type="button" class="btn btn-default" value="Execute" id="executeButton" onclick="execute()">
 
             <input type="file" id="saveInput" style="display:none" onchange="save()">
@@ -51,11 +47,15 @@
     </div>
 
     <div class="col-md-3" >
-        <textarea readonly class="configuration">configuration</textarea>
-        <div class="visualisation">
-                <img src="../static/img/upload_b.png" style="max-height:100%; max-width:100%; margin:auto; display:block" class="borderDiv">
-        </div>
         <textarea readonly id="description" class="description">Description</textarea>
+        <textarea readonly class="configuration" id="configuration">configuration</textarea>
+        <div class="visualisation">
+                <img src="../static/img/upload_b.png" style="max-height:100%; max-width:100%; margin:auto; display:block" id="renderPic" class="borderDiv">
+        </div>
+        <div align="center">
+            <input type="button" class="btn btn-default" value="Previous" id="previousButton" onclick="displayPrevious()">
+            <input type="button" class="btn btn-default" value="Next" id="nextButton" onclick="displayNext()">
+        </div>
     </div>
 </div>
 {% endblock body %}

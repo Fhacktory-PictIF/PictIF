@@ -87,6 +87,9 @@ function selectLine(obj) {
     else {
         oldObj = obj;
     }
+
+    var type = document.getElementById(oldObj.id).firstChild.innerHTML;
+    displayStaticDescription(type);
 }
 
 function addBlock() {
@@ -102,7 +105,7 @@ function addBlock() {
                 if(data.ok)
                 {
                     notify(type + " block added\n");
-                    addComponent(id, type)
+                    addDraggableComponent(data.id, type);
                 }
                 else
                 {
@@ -193,5 +196,18 @@ function load() {
     $("#loadButton").removeAttr("disabled");
 }
 
+function cleanDisplay()
+{
+    $("#nextButton").attr("disabled", "disabled");
+    $("#previousButton").attr("disabled", "disabled");
+    $("#description").val("");
+    $("#configuration").innerHTML = "";
+    $("#renderPic").attr('src', "../static/img/upload_b.png");
+    currentPicIdx = 0;
+}
+
+cleanDisplay();
 $("#addButton").attr("disabled", "disabled");
+$("#search").val("");
+$("#console").val("");
 fillInitTable();
