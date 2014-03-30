@@ -85,6 +85,7 @@ function selectLine(obj) {
     var idLigne=obj.id;
     obj.className="danger";
     $("#addButton").removeAttr("disabled");
+    $("#executeButton").attr("disabled", "disabled");
 
     if (oldObj!=null) {
         oldObj.className = "";
@@ -137,9 +138,9 @@ function reset() {
 */
 
 function execute() {
-    notify("Executing node TODO...");
+    notify("Executing node...");
     $.ajax({
-        url: '/block/execute/' + 'TODOOOOO',
+        url: '/block/execute/' + data.id,
         type: 'POST',
         dataType: "json",
         data: JSON.stringify("data"),
@@ -155,14 +156,24 @@ function choose(inputId) {
 
 function save() {
     $("#saveButton").attr("disabled", "disabled");
-    var filePath = $("#saveInput").val();
+
+    var currentdate = new Date();
+    var filePath = "output/" + currentdate.getDate() + "_"
+                    + (currentdate.getMonth()+1)  + "_"
+                    + currentdate.getFullYear() + "_"
+                    + currentdate.getHours() + "_"
+                    + currentdate.getMinutes() + "_"
+                    + currentdate.getSeconds() + ".out";
+
     notify("Saving work flow to " + filePath + "...");
 
     $.ajax({
-        url: '/save/' + filePath,
+        url: '/save',
         type: 'POST',
+        async: false,
         dataType: "json",
-        data: JSON.stringify("data"),
+        data: JSON.stringify({"filePath": filePath}),
+        contentType: 'application/json;charset=UTF-8',
         success : function(data){
             if(data.ok)
             {
@@ -180,18 +191,21 @@ function save() {
 function load() {
     $("#loadButton").attr("disabled", "disabled");
     var filePath = $("#loadInput").val();
+    alert(filePath);
     notify("Loading work flow from " + filePath + "...");
 
     $.ajax({
-        url: '/load/' + filePath,
+        url: '/load',
         type: 'POST',
+        async: false,
         dataType: "json",
-        data: JSON.stringify("data"),
+        data: JSON.stringify({"filePath": filePath}),
+        contentType: 'application/json;charset=UTF-8',
         success : function(data){
             if(data.ok)
             {
+                cleanDisplay();
                 notify("Done\n");
-                notify("TODO: CLEAN + UPDATE UI\n");
             }
             else
             {
@@ -213,7 +227,9 @@ function cleanDisplay()
 }
 
 cleanDisplay();
+$("#loadButton").attr("disabled", "disabled");  //TORO remove when managed
 $("#addButton").attr("disabled", "disabled");
+$("#saveButton").removeAttr("disabled");
 $("#search").val("");
 $("#console").val("");
 fillInitTable();

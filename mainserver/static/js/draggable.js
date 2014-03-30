@@ -46,11 +46,22 @@ var dropFunction = function(params){
       contentType: 'application/json;charset=UTF-8',
       success : function(data){
         return data.ok;
-        //TODO Recuperer les donnees et ajouter un bloc au canevas
       }});
 }
 
+var clearTableSelection = function() {
+  $("#addButton").attr("disabled", "disabled");
+
+    var table = document.getElementById("blockslist");
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        row.removeAttribute("class");
+    }
+}
+
 var onClickElement = function(obj){
+  clearTableSelection();
+  $("#executeButton").removeAttr("disabled");
+
   $.ajax({
       url: '/getDescription/' + obj.getAttribute('id'),
       type: 'GET',

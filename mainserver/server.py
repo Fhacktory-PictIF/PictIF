@@ -70,18 +70,25 @@ def getBlockFromType(blockType):
     resp = {'ok': False}
     return json.dumps(resp)
 
-@app.route("/save/<filePath>", methods = ['POST'])
-def saveWorkFlow(filepath):
-    for key, component in componentGestioner:
+@app.route("/save", methods = ['POST'])
+def saveWorkFlow():
+    param = json.loads(request.data)
+    filePath = param['filePath']
+
+    for key in componentGestioner.map_of_component:
+        component = componentGestioner.map_of_component[key]
         for image in component.images:
             image.load()
             image.unload()
-    pickle.dump(componentGestioner, open("saved.b", "wb"))
+    pickle.dump(componentGestioner, open(filePath, "wb"))
     resp = dict(ok=True)
     return json.dumps(resp)
 
-@app.route("/load/<filePath>", methods = ['POST'])
-def loadWorkFlow(filePath):
+@app.route("/load", methods = ['POST'])
+def loadWorkFlow():
+    param = json.loads(request.data)
+    filePath = param['filePath']
+
     try:
         componentGestioner.map_of_component = pickle.load(open(filePath, "rb"))
         resp = dict(ok=True)
