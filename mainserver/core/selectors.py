@@ -52,13 +52,13 @@ class RowFilter(Component):
         if self.time_reference is not None:
             for image in tempI:
                 if self.time_relative == 1:
-                    if self.date < image.date:
+                    if self.time_reference < image.date:
                         tempO.add(image)
                 elif self.time_relative == -1:
-                    if self.date > image.date:
+                    if self.time_reference > image.date:
                         tempO.add(image)
                 elif self.time_relative == 0:
-                    if self.date == image.date:
+                    if self.time_reference == image.date:
                         tempO.add(image)
         elif self.extensions is not None:
             if not self.extension_keep:
