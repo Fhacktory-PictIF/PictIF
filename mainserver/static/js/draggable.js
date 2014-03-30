@@ -184,7 +184,7 @@ var addDraggableComponent = function(id, type){
 
     newComponent.append(title);
     $('#container').append(newComponent);
-    jsPlumb.draggable($(".itemDrag"));
+    jsPlumb.draggable($(".itemDrag"), { containment : "parent"});
 
     switch(String(dictType[type]))
     {
