@@ -61,7 +61,7 @@ var dropFunction = function(params){
 }
 
 var addDraggableComponent = function(id, type){
-    var newState = $('<div>').attr('id', id).addClass('itemDrag');
+    var newState = $('<div>').attr('id', String(id)).addClass('itemDrag');
     var title = $('<div>').addClass('title').text(type);
     var connect = $('<div>').addClass('connect');
 
@@ -74,11 +74,11 @@ var addDraggableComponent = function(id, type){
     $('#container').append(newState);
     jsPlumb.draggable($(".itemDrag"));
 
-    jsPlumb.addEndpoint(id, {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
+    jsPlumb.addEndpoint(String(id), {anchor:"Right", isSource:true, maxConnections:5, connectorStyle : { strokeStyle:"#666" }, endpoint:"Rectangle",
         beforeDetach: function(conn) {
             return detachFunction(conn);
         }});
-    jsPlumb.addEndpoint(id,  {
+    jsPlumb.addEndpoint(String(id),  {
         anchor:"BottomLeft",
         isTarget:true,
         beforeDrop: function(params) {
@@ -87,6 +87,6 @@ var addDraggableComponent = function(id, type){
         }
     });
 
-    jsPlumb.addEndpoint(id,  {anchor:"TopLeft",isTarget:true});
+    jsPlumb.addEndpoint(String(id),  {anchor:"TopLeft",isTarget:true});
 
 };
