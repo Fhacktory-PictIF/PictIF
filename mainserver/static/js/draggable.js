@@ -1,5 +1,5 @@
 
-var dictType = {'Camera stream Reader': [0,1], 'Picture Writer' : [1,0], 'Picture Reader' : [0,1], 'Cropper' : [1,1], 'Gray Scale': [1,1], 'Chromakey':[2,1], 'Image Bluhrer' : [1,1], 'Splitter':[1,2], 'File Filter':[1,1], 'Joiner':[2,1]}
+var dictType = {'Camera Stream Reader': [0,1], 'Picture Writer' : [1,0], 'Picture Reader' : [0,1], 'Cropper' : [1,1], 'Gray Scale': [1,1], 'Chromakey':[2,1], 'Image Bluhrer' : [1,1], 'File Splitter':[1,2], 'File Filter':[1,1], 'Joiner':[2,1]}
 
 /* Getting Handlebar templates */
 readerTemplate = loadTemplate('#reader-template');
