@@ -5,7 +5,7 @@ from IO import O, ImageData
 import os
 
 class Reader(component.Component):
-    attr_description = component.Component.attr_description + "pathes:list:lists of file or folder pathes,\
+    attr_description = component.Component.attr_description + "pathes:list(string):lists of file or folder pathes,\
             length:int:images count,key_points:list:osef,mean_colors:list:osef2"
     description = "Creates a data stream from a file or a folder and its subfolders."
     
