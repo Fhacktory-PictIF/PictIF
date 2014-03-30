@@ -138,12 +138,12 @@ function execute() {
     notify("Done\n");
 }
 
-function save() {
+function save(filePath) {
     $("#saveButton").attr("disabled", "disabled");
-    notify("Saving work flow...");
+    notify("Saving work flow to " + filePath + "...");
     //Save everything
     $.ajax({
-        url: '/save',
+        url: '/save/', + filePath
         type: 'POST',
         dataType: "json",
         data: JSON.stringify("data"),
@@ -158,7 +158,6 @@ function save() {
             }
             $("#saveButton").removeAttr("disabled");
         }});
-
 }
 
 $("#addButton").attr("disabled", "disabled");
