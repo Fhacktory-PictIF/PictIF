@@ -388,6 +388,22 @@ class Recognizer(Component):
             os.system("opencv_createsamples -info ../test/positives.dat -vec ../test/positives.vec -num "+ str(nb_positives) +" -w 48 -h 48")
             os.system("opencv_traincascade -data ../../XML/ -vec ../test/positives.vec -w 48 -h 48 -bg ../test/negatives.dat -numPos "+ str(nb_positives) + " -numNeg "+ str(nb_negatives))
 
+            cascade = cv2.CascadeClassifier('../../XML/haarcascade_frontalface_default.xml')
+            
+            for i in self.parent3.images:
+                img = cv2.imread(i.path)
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                ret,thresh = cv2.threshold(gray,127,255,0)
+                faces = cascade.detectMultiScale(gray, 1.3, 5)
+                #contours, _ = cv2.findContours(thresh, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+                for (x,y,w,h),k in zip(faces,range(len(faces))):
+                    #cv2.ellipse(img, (x + w / 2,y + h / 2),(w / 2,h / 2), 0, 0, 360,(255,0,0),2)
+                    o = img[y: y + h, x: x + w]
+                    path = dir_tmp + i.name + str(self.id) + str(k) + '.jpg'
+                    cv2.imwrite(dir_tmp + i.name + str(self.id) + str(k) + '.jpg', o)
+                    image = createImage(path)
+                    image.date = time.ctime(os.path.getctime(image.path))
+                    self.images.append(image)
             
 
 class CamReader(Component):

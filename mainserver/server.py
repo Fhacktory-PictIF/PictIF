@@ -71,12 +71,12 @@ def getBlockFromType(blockType):
     return json.dumps(resp)
 
 @app.route("/save/<filePath>", methods = ['POST'])
-def saveWorkFlow(filepath):
-    for key, component in componentGestioner:
+def saveWorkFlow(filePath):
+    for key, component in componentGestioner.map_of_component:
         for image in component.images:
             image.load()
             image.unload()
-    pickle.dump(componentGestioner, open("saved.b", "wb"))
+    pickle.dump(componentGestioner, open(filePath, "wb"))
     resp = dict(ok=True)
     return json.dumps(resp)
 
@@ -129,7 +129,7 @@ def getDescription(objId) :
     if request.method == 'GET' :
         component = componentGestioner.map_of_component[objId]
         listAttr = ["TODO CONFIGURATION PAS READ ONLY"]
-        resp={'ok':True, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
+        resp={'ok':True, 'id':objId, 'attrs':listAttr, 'images' : component.images, 'strDesc': component.description}
         return json.dumps(resp)
 
     resp={'ok':False}
